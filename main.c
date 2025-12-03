@@ -1,13 +1,14 @@
+#include <stdio.h>
 #include "raylib.h"
 #include "raymath.h" 
 
 int main() {
-    const int m,n;
+    int m,n;
     int ligthCoreH,lightcoreW;
     int playersCount;
     int shadowWhatcherCount;
     int WallCount;
-    scanf("%d %d", &m, &n);
+    scanf("%d %d", &n, &m);
     scanf("%d %d",&ligthCoreH, &lightcoreW);
     scanf("%d", &playersCount);
     int players[playersCount][2];
@@ -19,7 +20,7 @@ int main() {
     int shadowWhatchers[shadowWhatcherCount][2];
     for (int i = 0; i < shadowWhatcherCount; i++)
     {
-        scnaf("%d", &shadowWhatchers[i][0], &shadowWhatchers[i][1]);
+        scanf("%d %d", &shadowWhatchers[i][0], &shadowWhatchers[i][1]);
     }
     scanf("%d",&WallCount);
     int walls[2][WallCount];
@@ -27,15 +28,27 @@ int main() {
     {
         scanf("%d %d",&walls[i][0], &walls[i][1]);
     }
+    float cellHeight = (600.0-40.0) / n;
+    float cellWidth = (600.0-40.0) / m;
     
-    Color red = {255,0,0,255};
     InitWindow(600, 600, "Piece Move Animation");
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
         BeginDrawing();
-        ClearBackground(red);
-
+        for (int c = 0; c < m; c++)
+        {
+            DrawLine(c*cellWidth, 20, c*cellWidth, 580.0, BLACK);
+        }
+        for (int r = 0; r < n; r++)
+        {
+            DrawLine(20, r*cellHeight, 580.0, r*cellHeight, BLACK);
+        }
+        //DrawRectangleLines(20, 20, 560, 560, BLACK);
+        //Texture2D peice_red=LoadTexture("red.png");
+        //Texture2D peice_blue=LoadTexture("blue.png");
+        ClearBackground(WHITE);
+        
         EndDrawing();
     }
     
