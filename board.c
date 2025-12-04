@@ -14,7 +14,7 @@ void DrawGridB(int rows, int cols, int cellWidth, int cellHeight, int height, in
 
 
 void ShowingLightcore(int rows, int cols, int cellWidth, int cellHeight){
-    Color lightcore = {90, 114, 104, 210};
+    Color lightcore = {252, 250, 109, 210};
     DrawRectangle((cellWidth * (rows-1)) + 20, (cellHeight * (cols-1)) +20, cellWidth, cellHeight, lightcore);
 }
 
