@@ -15,6 +15,49 @@ void DrawGridB(int rows, int cols, int cellWidth, int cellHeight, int height, in
 
 void ShowingLightcore(int rows, int cols, int cellWidth, int cellHeight){
     Color lightcore = {252, 250, 109, 210};
-    DrawRectangle((cellWidth * (rows-1)) + 20, (cellHeight * (cols-1)) +20, cellWidth, cellHeight, lightcore);
+    DrawRectangle((cellWidth * (rows)) + 20, (cellHeight * (cols)) +20, cellWidth, cellHeight, lightcore);
 }
+
+void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth, int cellHeight){
+    int x, y, pX, pY; float scale;
+    for(int i = 0; i < piecesNo; i++){
+        x = pieces[i][1] * cellWidth + 20;
+        y = pieces[i][0] * cellHeight + 20;
+        scale = 1.1 * (float)cellWidth / piece.width;
+        pX = x + (cellWidth - scale * piece.width) / 2;
+        pY = y + (cellHeight - scale * piece.height) / 2;
+        DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
+    }
+}
+
+void ShowingWalls(int wallCount ,int walls[][2], char wallsState[], int cellWidth, int cellHeight){
+    for (int i = 0; i < wallCount; i++)
+    {
+        if (wallsState[i] == 'H') 
+        {
+            int startXH = ((walls[i][0]) * cellWidth) + 20;
+            int endXH = ((walls[i][0] + 1) * cellWidth) + 20;
+            int startYH = ((walls[i][1] + 1) * cellHeight) + 20;
+            int endYH = ((walls[i][1] + 1) * cellHeight) + 20;
+            Vector2 startH = {startXH , startYH};
+            Vector2 endH = {endXH , endYH};
+            DrawLineEx(startH, endH, 5.0f, BLACK);
+        }
+        else if (wallsState[i] == 'V')
+        {
+            int startXV = ((walls[i][0] + 1) * cellWidth) + 20;
+            int endXV = ((walls[i][0] + 1) * cellWidth) + 20;
+            int startYV = ((walls[i][1]) * cellHeight) + 20;
+            int endYV = ((walls[i][1] + 1) * cellHeight) + 20;
+            Vector2 startV = {startXV , startYV};
+            Vector2 endV = {endXV , endYV};
+            DrawLineEx(startV, endV, 5.0f, BLACK);
+        }
+
+        
+    }
+    
+
+}
+
 
