@@ -14,8 +14,8 @@ void DrawGridB(int rows, int cols, int cellWidth, int cellHeight, int height, in
 
 
 void ShowingLightcore(int rows, int cols, int cellWidth, int cellHeight){
-    Color lightcore = {252, 250, 109, 210};
-    DrawRectangle((cellWidth * (rows)) + 20, (cellHeight * (cols)) +20, cellWidth, cellHeight, lightcore);
+    Color lightcore = {252, 250, 109, 250};
+    DrawRectangle((cellWidth * (cols)) + 20, (cellHeight * (rows)) +20, cellWidth, cellHeight, lightcore);
 }
 
 void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth, int cellHeight){
@@ -35,20 +35,20 @@ void ShowingWalls(int wallCount ,int walls[][2], char wallsState[], int cellWidt
     {
         if (wallsState[i] == 'H') 
         {
-            int startXH = ((walls[i][0]) * cellWidth) + 20;
-            int endXH = ((walls[i][0] + 1) * cellWidth) + 20;
-            int startYH = ((walls[i][1] + 1) * cellHeight) + 20;
-            int endYH = ((walls[i][1] + 1) * cellHeight) + 20;
+            int startXH = ((walls[i][1]) * cellWidth) + 20;
+            int endXH = ((walls[i][1] + 1) * cellWidth) + 20;
+            int startYH = ((walls[i][0] + 1) * cellHeight) + 20;
+            int endYH = ((walls[i][0] + 1) * cellHeight) + 20;
             Vector2 startH = {startXH , startYH};
             Vector2 endH = {endXH , endYH};
             DrawLineEx(startH, endH, 5.0f, BLACK);
         }
         else if (wallsState[i] == 'V')
         {
-            int startXV = ((walls[i][0] + 1) * cellWidth) + 20;
-            int endXV = ((walls[i][0] + 1) * cellWidth) + 20;
-            int startYV = ((walls[i][1]) * cellHeight) + 20;
-            int endYV = ((walls[i][1] + 1) * cellHeight) + 20;
+            int startXV = ((walls[i][1] + 1) * cellWidth) + 20;
+            int endXV = ((walls[i][1] + 1) * cellWidth) + 20;
+            int startYV = ((walls[i][0]) * cellHeight) + 20;
+            int endYV = ((walls[i][0] + 1) * cellHeight) + 20;
             Vector2 startV = {startXV , startYV};
             Vector2 endV = {endXV , endYV};
             DrawLineEx(startV, endV, 5.0f, BLACK);

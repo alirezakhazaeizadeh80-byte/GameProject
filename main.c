@@ -50,8 +50,8 @@ int main() {
 
         DrawGridB(n, m, cellWidth, cellHeight, height, width);
         ShowingLightcore(ligthCoreH, lightcoreW, cellWidth, cellHeight);
-        Showingpieces(pieceBlue, playersCount, players, cellWidth, cellHeight);
-        Showingpieces(pieceRed, shadowWhatcherCount, shadowWhatchers, cellWidth, cellHeight);
+        Showingpieces(pieceRed, playersCount, players, cellWidth, cellHeight);
+        Showingpieces(pieceBlue, shadowWhatcherCount, shadowWhatchers, cellWidth, cellHeight);
         ShowingWalls(WallCount ,walls, WallsState, cellHeight, cellWidth);
 
         EndDrawing();
