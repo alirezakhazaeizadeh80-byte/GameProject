@@ -27,15 +27,25 @@ int main() {
     int walls[WallCount][2];
     float cellHeight = ((height - 40) / n);
     float cellWidth = ((width - 40) / m);
-    do
-    {   
+    int mark[n][m];
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++)mark[i][j]=0;
+    }
+    //do
+    //{   
         ligthCoreH = rand() % n;
         lightCoreW = rand() % m;
+        signing(ligthCoreH, lightCoreW, n, m, mark);
     
         for (int i = 0; i < playersCount; i++)
         {
             int X = rand() % n;
             int Y = rand() % m;
+            while(mark[X][Y]){
+            X = rand() % n;
+            Y = rand() % m;
+            }
+            signing(X, Y, n, m, mark);
             players[i][0] = X;
             players[i][1] = Y;
         }
@@ -44,10 +54,15 @@ int main() {
         {
             int X = rand() % n;
             int Y = rand() % m;
+            while(mark[X][Y]){
+            X = rand() % n;
+            Y = rand() % m;
+            }
+            signing(X, Y, n, m, mark);
             shadowWhatchers[i][0] = X;
             shadowWhatchers[i][1] = Y;
         }
-        for (int i = 0; i < WallCount; i++)
+        /*for (int i = 0; i < WallCount; i++)
         {
             if (rand() % 2 == 0)
             {
@@ -61,8 +76,8 @@ int main() {
             int Y = rand() % m;
             walls[i][0] = X;
             walls[i][1] = Y;
-        }
-} while (controllingInputs(players, playersCount, shadowWhatchers, shadowWhatcherCount, ligthCoreH, lightCoreW) == 1);
+        }*/
+//} while (controllingInputs(players, playersCount, shadowWhatchers, shadowWhatcherCount, ligthCoreH, lightCoreW) == 1);
     InitWindow(width, height, "The legend of the Labyrinth");
     SetTargetFPS(60);
     Color Background = {213, 249, 222, 1};

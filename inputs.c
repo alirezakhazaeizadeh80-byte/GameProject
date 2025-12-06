@@ -33,5 +33,11 @@ int controllingInputs(int players[][2],int playersCount, int shadowWatchers[][2]
     
 
 }
-
+void signing(int x, int y, int n, int m, int mark[][m]){
+    mark[x][y]=1;
+    if(x-1>=0)mark[x-1][y]=1;
+    if(x+1<n)mark[x+1][y]=1;
+    if(y-1>=0)mark[x][y-1]=1;
+    if(y-1<m)mark[x][y+1]=1;
+}
 
