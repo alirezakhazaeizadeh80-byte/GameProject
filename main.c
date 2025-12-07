@@ -3,14 +3,30 @@
 # include "raymath.h" 
 # include "board.h"
 int main() {
-    const int width = 600;
-    const int height = 600;
+    float width;
+    float height;
     int m,n;
     int ligthCoreH,lightcoreW;
     int playersCount;
     int shadowWhatcherCount;
     int WallCount;
     scanf("%d %d", &n, &m);
+        if (abs(n - m) <= 4 )
+    {
+        width = 800.0;
+        height= 800.0;
+    }
+    else if (n - m > 4)
+    {
+        width = 500.0;
+        height = 800.0;
+    }
+    else if (m - n > 4)
+    {
+        width = 800.0;
+        height = 500.0;
+    }
+
     scanf("%d %d",&ligthCoreH, &lightcoreW);
     scanf("%d", &playersCount);
     int players[playersCount][2];
@@ -34,7 +50,7 @@ int main() {
     float cellHeight = ((height - 40) / n);
     float cellWidth = ((width - 40) / m);
     
-    InitWindow(600, 600, "The legend of the Labyrinth");
+    InitWindow(width, height, "The legend of the Labyrinth");
     SetTargetFPS(60);
     Color Background = {213, 249, 222, 1};
     Texture2D pieceRed = LoadTexture("pieces/redPieces.png");
