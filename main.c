@@ -103,11 +103,11 @@ int main() {
             int sw=0;
             sign[X][Y][1]=1;
             dfs(X, Y, &sw, n, m, sign, 1, isWall);
-            while(sw==2 || isWall[X][Y][1]==1){
+            while(sw == 2 || isWall[X][Y][1] == 1){
             X = rand() % n;
             Y = rand() % (m-1);
-            sw=0;
-            sign[X][Y][1]=1;
+            sw = 0;
+            sign[X][Y][1] = 1;
             dfs(X, Y, &sw, n, m, sign, 1, isWall);
             }
             isWall[X][Y][1]=1;
@@ -134,7 +134,7 @@ int main() {
         ShowingLightcore(ligthCoreH, lightCoreW, cellWidth, cellHeight);
         Showingpieces(pieceRed, playersCount, players, cellWidth, cellHeight);
         Showingpieces(pieceBlue, shadowWhatcherCount, shadowWhatchers, cellWidth, cellHeight);
-        ShowingWalls(WallCount ,walls, WallsState, cellHeight, cellWidth);
+        ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight);
 
         EndDrawing();
     }
