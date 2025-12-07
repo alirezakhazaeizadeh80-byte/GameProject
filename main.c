@@ -61,61 +61,7 @@ int main() {
         shadowWhatchers[i][0] = X;
         shadowWhatchers[i][1] = Y;
         }
-    int sign[n][m][2];
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            sign[i][j][0]=0;
-            sign[i][j][1]=0;
-        }
-    }int isWall[n][m][2];
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            isWall[i][j][0]=0;
-            isWall[i][j][1]=0;
-        }
-    }
-    for (int i = 0; i < WallCount; i++)
-    {
-        if (rand() % 2 == 0)
-        {
-            WallsState[i] = 'H';
-            int X = rand() % (n-1);
-            int Y = rand() % m;
-            int sw=0;
-            sign[X][Y][0]=1;
-            dfs(X, Y, &sw, n, m, sign, 0, isWall);
-            while(sw==2 || isWall[X][Y][0]==1){
-            X = rand() % (n-1);
-            Y = rand() % m;
-            sw=0;
-            sign[X][Y][0]=1;
-            dfs(X, Y, &sw, n, m, sign, 0, isWall);
-            }
-            isWall[X][Y][0]=1;
-            walls[i][0] = X;
-            walls[i][1] = Y;
-        }
-        else
-        {
-            WallsState[i] = 'V';
-            int X = rand() % n;
-            int Y = rand() % (m-1);
-            int sw=0;
-            sign[X][Y][1]=1;
-            dfs(X, Y, &sw, n, m, sign, 1, isWall);
-            while(sw == 2 || isWall[X][Y][1] == 1){
-            X = rand() % n;
-            Y = rand() % (m-1);
-            sw = 0;
-            sign[X][Y][1] = 1;
-            dfs(X, Y, &sw, n, m, sign, 1, isWall);
-            }
-            isWall[X][Y][1]=1;
-            walls[i][0] = X;
-            walls[i][1] = Y;
-        }
-        
-    }
+    ControllingWalls(WallCount, n, m, walls, WallsState);
     InitWindow(width, height, "The legend of the Labyrinth");
     SetTargetFPS(60);
     Color Background = {213, 249, 222, 1};
