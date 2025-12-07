@@ -1,11 +1,11 @@
 # include "board.h"
 
 void DrawGridB(int rows, int cols, int cellWidth, int cellHeight, int height, int width){
-    for (int c = 1; c <= rows; c++)
+    for (int c = 1; c <= cols; c++)
         {
             DrawLine((c*cellWidth)+ 20, 20, (c*cellWidth) + 20, width -20, BLACK);
         }
-    for (int r = 0; r < cols; r++)
+    for (int r = 1; r <= rows; r++)
         {
             DrawLine(20, (r*cellHeight) +20, 580.0, (r*cellHeight) +20, BLACK);
         }

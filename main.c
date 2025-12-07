@@ -52,7 +52,7 @@ int main() {
         ShowingLightcore(ligthCoreH, lightcoreW, cellWidth, cellHeight);
         Showingpieces(pieceRed, playersCount, players, cellWidth, cellHeight);
         Showingpieces(pieceBlue, shadowWhatcherCount, shadowWhatchers, cellWidth, cellHeight);
-        ShowingWalls(WallCount ,walls, WallsState, cellHeight, cellWidth);
+        ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight);
 
         EndDrawing();
     }
