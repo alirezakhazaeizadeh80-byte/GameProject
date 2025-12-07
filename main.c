@@ -5,11 +5,12 @@
 # include <time.h>
 # include <stdlib.h>
 # include "inputs.h"
+# include <math.h>
 
 
 int main() {
-    const int width = 600;
-    const int height = 600;
+    float width;
+    float height;
     srand(time(NULL));
     int m,n;
     int playersCount;
@@ -17,7 +18,23 @@ int main() {
     int WallCount;
     int ligthCoreH;
     int lightCoreW;
-    scanf("%d %d", &n, &m);
+
+    scanf("%d %d", &n, &m);    
+    if (abs(n - m) <= 4 )
+    {
+        width = 800.0;
+        height= 800.0;
+    }
+    else if (n - m > 4)
+    {
+        width = 500.0;
+        height = 800.0;
+    }
+    else if (m - n > 4)
+    {
+        width = 800.0;
+        height = 500.0;
+    }
     scanf("%d", &playersCount);
     int players[playersCount][2];
     scanf("%d",&shadowWhatcherCount);

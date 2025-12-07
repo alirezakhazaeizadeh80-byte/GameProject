@@ -1,15 +1,15 @@
 # include "board.h"
 
 void DrawGridB(int rows, int cols, int cellWidth, int cellHeight, int height, int width){
-    for (int c = 1; c <= cols; c++)
+    for (int c = 0; c <= cols; c++)
         {
-            DrawLine((c*cellWidth)+ 20, 20, (c*cellWidth) + 20, width -20, BLACK);
+            DrawLine((c*cellWidth)+ 20, 20, (c*cellWidth) + 20, height - 20, BLACK);
         }
-    for (int r = 1; r < rows; r++)
+    for (int r = 0; r <= rows; r++)
         {
-            DrawLine(20, (r*cellHeight) +20, 580.0, (r*cellHeight) +20, BLACK);
+            DrawLine(20, (r*cellHeight) +20, width - 20, (r*cellHeight) + 20, BLACK);
         }
-        DrawRectangleLines(20, 20, width - 40, height - 40, BLACK);
+        //DrawRectangleLines(20, 20, width - 40, height - 40, BLACK);
 }
 
 
