@@ -6,6 +6,7 @@
 # include <stdlib.h>
 # include "inputs.h"
 # include <math.h>
+# include "movements.h"
 
 
 int main() {
@@ -18,6 +19,7 @@ int main() {
     int WallCount;
     int ligthCoreH;
     int lightCoreW;
+    int showError;
 
     scanf("%d %d", &n, &m);    
     if (abs(n - m) <= 4 )
@@ -87,17 +89,69 @@ int main() {
     Texture2D pieceBlue = LoadTexture("pieces/bluePieces.png");
     SetTextureFilter(pieceBlue, TEXTURE_FILTER_TRILINEAR);
 
+    Camera2D cam = {0};
+    cam.offset = (Vector2){0, 0};
+    cam.target = (Vector2){0, 0};
+    cam.zoom = 1.0f;
+
+
+    float shakeTimeLeft = 0.0f;
+    float shakeIntensity = 5.0f;
+
+    Vector2 shakeOffset = {0, 0};
+
+
+
+
     while (!WindowShouldClose())
     {
+
         ClearBackground(Background);
 
         BeginDrawing();
+
+
+
+        if (IsKeyPressed(KEY_W))
+        {
+            movePieces(n, m, players, 0, 'W', &showError);
+        }
+        else if (IsKeyPressed(KEY_A))
+        {
+            movePieces(n, m, players, 0, 'A', &showError);
+        }
+        else if (IsKeyPressed(KEY_S))
+        {
+            movePieces(n, m, players, 0, 'S', &showError);
+        }
+        else if (IsKeyPressed(KEY_D))
+        {
+            movePieces(n, m, players, 0, 'D', &showError);
+        }
+        if (showError == 1) {
+            shakeTimeLeft = 0.2f;
+            showError = 0;
+        }
+        if (shakeTimeLeft > 0) {
+            shakeTimeLeft -= GetFrameTime();
+
+            shakeOffset.x = GetRandomValue(-shakeIntensity, shakeIntensity);
+            shakeOffset.y = GetRandomValue(-shakeIntensity, shakeIntensity);
+        }
+
+        cam.offset = shakeOffset;
+
+
+        BeginMode2D(cam);
 
         DrawGridB(n, m, cellWidth, cellHeight, height, width);
         ShowingLightcore(ligthCoreH, lightCoreW, cellWidth, cellHeight);
         Showingpieces(pieceRed, playersCount, players, cellWidth, cellHeight);
         Showingpieces(pieceBlue, shadowWhatcherCount, shadowWhatchers, cellWidth, cellHeight);
         ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight);
+
+        EndMode2D();
+
 
         EndDrawing();
     }
