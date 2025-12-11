@@ -46,61 +46,57 @@ void ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsSta
     for (int i = 0; i < WallCount; i++)
     {
         int sign[n][m];
-        for(int i = 0; i < n; i++){
+        int sw=1;
+        while(sw){
+            int state=rand() % 2; // Horizontal or vertical
+            int X, Y;
+            if(state == 0){
+            X = rand() % (n-1);
+            Y = rand() % m;
+            }else{
+                X = rand() % n;
+                Y = rand() % (m-1);
+            }
+            if(isWall[X][Y][state] == 0){
+            int counter = 1;
+            isWall[X][Y][state] = 1;
+            for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
                 sign[i][j] = 0;
             }
         }
-        if (rand() % 2 == 0)
-        {
-            WallsState[i] = 'H';
-            int X = rand() % (n-1);
-            int Y = rand() % m;
-            while(isWall[X][Y][0] == 1){
-            X = rand() % (n-1);
-            Y = rand() % m;
-            }
             sign[0][0] = 1;
-            int counter = 1;
-            isWall[X][Y][0] = 1;
             dfs(0, 0, n, m, sign, &counter, isWall);
             while(counter != n*m){
+            isWall[X][Y][state]=0;
+            state = rand() % 2;
+            if(state == 0){
             X = rand() % (n-1);
             Y = rand() % m;
+            }else{
+                X = rand() % n;
+                Y = rand() % (m-1);
+            }
             sign[0][0] = 1;
             counter = 1;
-            isWall[X][Y][0] = 1;
+            isWall[X][Y][state] = 1;
+            for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                sign[i][j] = 0;
+            }
+        }
+            sign[0][0] = 1;
             dfs(0, 0, n, m, sign, &counter, isWall);
+            }
+            if(state == 0){
+                WallsState[i] = 'H';
+            }else{
+                WallsState[i] = 'V';
             }
             walls[i][0] = X;
             walls[i][1] = Y;
-        }
-        else
-        {
-            WallsState[i] = 'V';
-            int X = rand() % n;
-            int Y = rand() % (m-1);
-            while(isWall[X][Y][1] == 1){
-            X = rand() % n;
-            Y = rand() % (m-1);
+            sw=0;
             }
-            sign[0][0] = 1;
-            int counter = 1;
-            isWall[X][Y][1] = 1;
-            dfs(0, 0, n, m, sign, &counter, isWall);
-            while(counter != n*m){
-            X = rand() % n;
-            Y = rand() % (m-1);
-            sign[0][0] = 1;
-            counter = 1;
-            isWall[X][Y][1] = 1;
-            dfs(0, 0, n, m, sign, &counter, isWall);
-            }
-            walls[i][0] = X;
-            walls[i][1] = Y;
-            
         }
-        
-    }
-}
-
+        }
+        }
