@@ -114,19 +114,19 @@ int main() {
 
         if (IsKeyPressed(KEY_W))
         {
-            movePieces(n, m, players, 0, 'W', &showError);
+            movePieces(n, m, players, 0, walls, WallsState, WallCount,'W' , &showError);
         }
         else if (IsKeyPressed(KEY_A))
         {
-            movePieces(n, m, players, 0, 'A', &showError);
+            movePieces(n, m, players, 0, walls, WallsState, WallCount, 'A', &showError);
         }
         else if (IsKeyPressed(KEY_S))
         {
-            movePieces(n, m, players, 0, 'S', &showError);
+            movePieces(n, m, players, 0, walls,WallsState ,  WallCount, 'S' , &showError);
         }
         else if (IsKeyPressed(KEY_D))
         {
-            movePieces(n, m, players, 0, 'D', &showError);
+            movePieces(n, m, players, 0, walls, WallsState,  WallCount, 'D', &showError);
         }
         if (showError == 1) {
             shakeTimeLeft = 0.2f;
