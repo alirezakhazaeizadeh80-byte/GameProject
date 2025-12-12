@@ -102,7 +102,7 @@ int main() {
 
 
 
-
+    int c = 0;
     while (!WindowShouldClose())
     {
 
@@ -115,18 +115,25 @@ int main() {
         if (IsKeyPressed(KEY_W))
         {
             movePieces(n, m, players, 0, walls, WallsState, WallCount,'W' , &showError);
+            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount);
+
         }
         else if (IsKeyPressed(KEY_A))
         {
             movePieces(n, m, players, 0, walls, WallsState, WallCount, 'A', &showError);
+            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount);
+
         }
         else if (IsKeyPressed(KEY_S))
         {
             movePieces(n, m, players, 0, walls,WallsState ,  WallCount, 'S' , &showError);
+            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount);
+
         }
         else if (IsKeyPressed(KEY_D))
         {
             movePieces(n, m, players, 0, walls, WallsState,  WallCount, 'D', &showError);
+            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount);
         }
         if (showError == 1) {
             shakeTimeLeft = 0.2f;
@@ -154,6 +161,7 @@ int main() {
 
 
         EndDrawing();
+        c++;
     }
     
 

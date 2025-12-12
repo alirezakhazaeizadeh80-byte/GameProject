@@ -1,6 +1,33 @@
 #include "movements.h"
 
+int checkWall(int walls[][2], int wallsCount,char wallStates[] ,char state, int wallx, int wally){
+    if (state == 'H')
+    {
+        for (int i = 0; i < wallsCount; i++)
+        {
+            if (walls[i][0] == wallx && walls[i][1] == wally && wallStates[i] == 'H')
+            {
+                return 1;
+            }
+            
+        }
+        
+    }    
+    else if (state == 'H')
+    {
+        for (int i = 0; i < wallsCount; i++)
+        {
+            if (walls[i][0] == wallx && walls[i][1] == wally && wallStates[i] == 'V')
+            {
+                return 1;
+            }
+            
+        }
 
+        
+    }
+    return 0;
+}
 int hitWalls(int rows, int cols, int players[][2],int player, int walls[][2], int wallcount, char wallsstates[] , char move){
     int px = players[player][0];
     int py = players[player][1];
@@ -98,6 +125,38 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
 
 
 
+void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowWatcherCount, int players[][2], int player, int walls[][2], char wallStates[],int wallsCount){
+    for (int i = 0; i < shadowWatcherCount; i++)
+    {
+        int px = players[player][0];
+        int py = players[player][1];
+
+        int shx = shadowWatcher[i][0];
+        int shy = shadowWatcher[i][1]; 
+        if (shy - py > 0 && checkWall(walls, wallsCount, wallStates, 'V', shx, shy - 1) == 0)
+        {
+            shadowWatcher[i][1] -= 1;
+        }
+        else if (shy - py < 0 && checkWall(walls, wallsCount, wallStates, 'V', shx, shy) == 0)
+        {
+            shadowWatcher[i][1] += 1;
+        }
+        if (shx - px > 0 && checkWall(walls, wallsCount, wallStates, 'H', shx -1, shy) == 0)
+        {
+            shadowWatcher[i][0] -= 1;
+        }
+        else if (shx - px < 0 && checkWall(walls, wallsCount, wallStates, 'H', shx, shy) == 0)
+        {
+            shadowWatcher[i][0] += 1;
+            
+        }
+        
+        
+        
+        
+    }
+    
+}
 
 
 
