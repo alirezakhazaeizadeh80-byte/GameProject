@@ -112,9 +112,9 @@ int main() {
 
     Vector2 shakeOffset = {0, 0};
 
-        float fontsize = 10.0f;
-        float maxsize = 180.0f;
-        float speed = 15.0f;
+    float fontsize = 10.0f;
+    float maxsize = 150.0f;
+    float speed = 50.0f;
 
 
 
@@ -167,7 +167,7 @@ int main() {
         }
 
         cam.offset = shakeOffset;
-        
+
 
 
         BeginMode2D(cam);
@@ -179,13 +179,10 @@ int main() {
         ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight);
 
         EndMode2D();
-        if (fontsize < maxsize)
-            {
-                fontsize += speed * GetFrameTime();
-            }
 
         
-        Win(height, width, ligthCoreH, lightCoreW, players, 1, f, fontsize);
+        Win(height, width, ligthCoreH, lightCoreW, players, 1, f, &fontsize, maxsize, speed);
+        Lose(height, width, m, players, playersCount, shadowWhatchers, isShadowWatcher, &fontsize, maxsize, speed, f);
 
 
         EndDrawing();
@@ -195,5 +192,6 @@ int main() {
 
     CloseWindow();
     return 0;
+
 }
 
