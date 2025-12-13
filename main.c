@@ -69,6 +69,7 @@ int main() {
         players[i][1] = Y;
     }
 
+    int isShadowWatcher[n][m];
     for (int i = 0; i < shadowWhatcherCount; i++)
     {
         int X = rand() % n;
@@ -78,9 +79,10 @@ int main() {
             Y = rand() % m;
         }
         signing(X, Y, n, m, mark);
+        isShadowWatcher[X][Y]=1;
         shadowWhatchers[i][0] = X;
         shadowWhatchers[i][1] = Y;
-        }
+    }
     int isWall[n][m][2];
     ControllingWalls(WallCount, n, m, walls, WallsState, isWall);
     InitWindow(width, height, "The legend of the Labyrinth");
@@ -116,25 +118,25 @@ int main() {
         if (IsKeyPressed(KEY_W))
         {
             movePieces(n, m, players, 0, walls, WallsState, WallCount,'W' , &showError, isWall);
-            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall);
+            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
 
         }
         else if (IsKeyPressed(KEY_A))
         {
             movePieces(n, m, players, 0, walls, WallsState, WallCount, 'A', &showError, isWall);
-            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall);
+            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
 
         }
         else if (IsKeyPressed(KEY_S))
         {
             movePieces(n, m, players, 0, walls,WallsState ,  WallCount, 'S' , &showError, isWall);
-            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall);
+            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
 
         }
         else if (IsKeyPressed(KEY_D))
         {
             movePieces(n, m, players, 0, walls, WallsState,  WallCount, 'D', &showError, isWall);
-            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall);
+            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
         }
         if (showError == 1) {
             shakeTimeLeft = 0.2f;
