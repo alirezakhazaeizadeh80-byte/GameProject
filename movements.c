@@ -55,7 +55,7 @@ void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowW
         if (shy - py > 1 && isWall[shx][shy - 1][1] == 0 && isWall[shx][shy - 2][1] == 0 && isShadowWatcher[shx][shy - 2] == 0)
         {
             isShadowWatcher[shx][shy] = 0;
-            isShadowWatcher[shx][shy-2] = 1;
+            isShadowWatcher[shx][shy - 2] = 1;
             shadowWatcher[i][1] -= 2;
         }
         else if (shy - py < -1 && isWall[shx][shy][1] == 0 && isWall[shx][shy + 1][1] == 0 && isShadowWatcher[shx][shy + 2] == 0)
@@ -69,17 +69,16 @@ void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowW
             isShadowWatcher[shx][shy] = 0;
             isShadowWatcher[shx][shy - 1] = 1;
             shadowWatcher[i][1] -= 1;
-            shy-=1;
-            if(shx - px > 0 && isWall[shx - 1][shy][0] == 0 && isShadowWatcher[shx - 1][shy] == 0)
+            if(shx - px > 0 && isWall[shx - 1][shy - 1][0] == 0 && isShadowWatcher[shx - 1][shy - 1] == 0)
             {
-                isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx][shy - 1] = 1;
+                isShadowWatcher[shx][shy - 1] = 0;
+                isShadowWatcher[shx - 1][shy - 1] = 1;
                 shadowWatcher[i][0] -= 1;
             }
-            else if(shx - px < 0 && isWall[shx][shy][0] == 0 && isShadowWatcher[shx + 1][shy] == 0)
+            else if(shx - px < 0 && isWall[shx][shy - 1][0] == 0 && isShadowWatcher[shx + 1][shy - 1] == 0)
             {
-                isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx][shy + 1] = 1;
+                isShadowWatcher[shx][shy - 1] = 0;
+                isShadowWatcher[shx + 1][shy - 1] = 1;
                 shadowWatcher[i][0] += 1;
             }
 
@@ -89,17 +88,16 @@ void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowW
             isShadowWatcher[shx][shy] = 0;
             isShadowWatcher[shx][shy + 1] = 1;
             shadowWatcher[i][1] += 1;
-            shy+=1;
-            if(shx - px > 0 && isWall[shx - 1][shy][0] == 0 && isShadowWatcher[shx - 1][shy] == 0)
+            if(shx - px > 0 && isWall[shx - 1][shy + 1][0] == 0 && isShadowWatcher[shx - 1][shy + 1] == 0)
             {
-                isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx][shy - 1] = 1;
+                isShadowWatcher[shx][shy + 1] = 0;
+                isShadowWatcher[shx - 1][shy + 1] = 1;
                 shadowWatcher[i][0] -= 1;
             }
-            else if(shx - px < 0 && isWall[shx][shy][0] == 0 && isShadowWatcher[shx + 1][shy] == 0)
+            else if(shx - px < 0 && isWall[shx][shy + 1][0] == 0 && isShadowWatcher[shx + 1][shy + 1] == 0)
             {
-                isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx][shy + 1] = 1;
+                isShadowWatcher[shx][shy + 1] = 0;
+                isShadowWatcher[shx + 1][shy + 1] = 1;
                 shadowWatcher[i][0] += 1;
             }
         }

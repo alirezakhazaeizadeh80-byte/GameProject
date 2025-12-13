@@ -70,6 +70,11 @@ int main() {
     }
 
     int isShadowWatcher[n][m];
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            isShadowWatcher[i][j] = 0;
+        }
+    }
     for (int i = 0; i < shadowWhatcherCount; i++)
     {
         int X = rand() % n;
@@ -79,7 +84,7 @@ int main() {
             Y = rand() % m;
         }
         signing(X, Y, n, m, mark);
-        isShadowWatcher[X][Y]=1;
+        isShadowWatcher[X][Y] = 1;
         shadowWhatchers[i][0] = X;
         shadowWhatchers[i][1] = Y;
     }
@@ -136,6 +141,10 @@ int main() {
         else if (IsKeyPressed(KEY_D))
         {
             movePieces(n, m, players, 0, walls, WallsState,  WallCount, 'D', &showError, isWall);
+            if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
+        }
+        else if (IsKeyPressed(KEY_SPACE))
+        {
             if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
         }
         if (showError == 1) {
