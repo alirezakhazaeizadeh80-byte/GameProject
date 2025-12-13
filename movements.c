@@ -1,4 +1,5 @@
 #include "movements.h"
+#include "raylib.h"
 
 
 
@@ -137,6 +138,26 @@ void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowW
     }
     
 }
+
+
+void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2], int playerCount, Font f, int fontsize){
+    for(int i = 0; i < playerCount; i++){
+        if (players[i][0] == lightcoreX && players[i][1] == lightcoreY)
+        {
+            char str[15] = "You Win!";
+            Color color = {0,194,50,255};
+            
+            
+            Vector2 textSize = MeasureTextEx(f, str, fontsize, 2);
+            Vector2 pos = {height/2 , width/2};
+            Vector2 origin = {textSize.x / 2, textSize.y/2};
+            DrawTextPro(f, str, pos, origin, 0.0f, fontsize, 2, color);
+            
+        }
+
+}
+}
+
 
 
 

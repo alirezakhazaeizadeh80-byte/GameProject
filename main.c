@@ -97,6 +97,9 @@ int main() {
     SetTextureFilter(pieceRed, TEXTURE_FILTER_TRILINEAR);
     Texture2D pieceBlue = LoadTexture("pieces/bluePieces.png");
     SetTextureFilter(pieceBlue, TEXTURE_FILTER_TRILINEAR);
+    Font f = LoadFontEx("fonts/LuckiestGuy-Regular.ttf", 100, 0, 0);
+    SetTextureFilter(f.texture, TEXTURE_FILTER_TRILINEAR);
+
 
     Camera2D cam = {0};
     cam.offset = (Vector2){0, 0};
@@ -108,6 +111,11 @@ int main() {
     float shakeIntensity = 5.0f;
 
     Vector2 shakeOffset = {0, 0};
+
+        float fontsize = 10.0f;
+        float maxsize = 180.0f;
+        float speed = 15.0f;
+
 
 
 
@@ -159,6 +167,7 @@ int main() {
         }
 
         cam.offset = shakeOffset;
+        
 
 
         BeginMode2D(cam);
@@ -170,10 +179,16 @@ int main() {
         ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight);
 
         EndMode2D();
+        if (fontsize < maxsize)
+            {
+                fontsize += speed * GetFrameTime();
+            }
+
+        
+        Win(height, width, ligthCoreH, lightCoreW, players, 1, f, fontsize);
 
 
         EndDrawing();
-        c++;
     }
     
 
