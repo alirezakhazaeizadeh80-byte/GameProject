@@ -106,26 +106,26 @@ void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowW
             if (shx - px > 1 && isWall[shx - 1][shy][0] == 0 && isWall[shx - 2][shy][0] == 0 && isShadowWatcher[shx - 2][shy] == 0)
             {
                 isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx][shy - 2] = 1;
+                isShadowWatcher[shx - 2][shy] = 1;
                 shadowWatcher[i][0] -= 2;
             }
             else if (shx - px < -1 && isWall[shx][shy][0] == 0 && isWall[shx + 1][shy][0] == 0 && isShadowWatcher[shx + 2][shy] == 0)
             {
                 isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx][shy + 2] = 1;
+                isShadowWatcher[shx + 2][shy] = 1;
                 shadowWatcher[i][0] += 2;
             
             }
             else if (shx - px > 0 && isWall[shx - 1][shy][0] == 0 && isShadowWatcher[shx - 1][shy] == 0)
             {
                 isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx][shy - 1] = 1;
+                isShadowWatcher[shx - 1][shy] = 1;
                 shadowWatcher[i][0] -= 1;
             }
             else if (shx - px < 0 && isWall[shx][shy][0] == 0 && isShadowWatcher[shx + 1][shy] == 0)
             {
                 isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx][shy + 1] = 1;
+                isShadowWatcher[shx + 1][shy] = 1;
                 shadowWatcher[i][0] += 1;
             
             } 
@@ -153,7 +153,7 @@ void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2],
             
             
             Vector2 textSize = MeasureTextEx(f, str, *fontsize, 2);
-            Vector2 pos = {height/2 , width/2};
+            Vector2 pos = {width/2 , height/2};
             Vector2 origin = {textSize.x / 2, textSize.y/2};
             DrawTextPro(f, str, pos, origin, 0.0f, *fontsize, 2, color);
             
@@ -179,7 +179,7 @@ void Lose(int height, int width, int cols,int players[][2], int playerCount , in
             
             
             Vector2 textSize = MeasureTextEx(f, str, *fontsize, 2);
-            Vector2 pos = {height/2 , width/2};
+            Vector2 pos = {width/2 , height/2};
             Vector2 origin = {textSize.x / 2, textSize.y/2};
             DrawTextPro(f, str, pos, origin, 0.0f, *fontsize, 2, color);
             
