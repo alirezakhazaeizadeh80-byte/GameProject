@@ -1,6 +1,6 @@
 #include "movements.h"
 
-int checkWall(int walls[][2], int wallsCount,char wallStates[] ,char state, int wallx, int wally){
+/*int checkWall(int walls[][2], int wallsCount,char wallStates[] ,char state, int wallx, int wally){
     if (state == 'H')
     {
         for (int i = 0; i < wallsCount; i++)
@@ -13,7 +13,7 @@ int checkWall(int walls[][2], int wallsCount,char wallStates[] ,char state, int 
         }
         
     }    
-    else if (state == 'H')
+    else if (state == 'V')
     {
         for (int i = 0; i < wallsCount; i++)
         {
@@ -27,8 +27,8 @@ int checkWall(int walls[][2], int wallsCount,char wallStates[] ,char state, int 
         
     }
     return 0;
-}
-int hitWalls(int rows, int cols, int players[][2],int player, int walls[][2], int wallcount, char wallsstates[] , char move){
+}*/
+/*int hitWalls(int rows, int cols, int players[][2],int player, int walls[][2], int wallcount, char wallsstates[] , char move){
     int px = players[player][0];
     int py = players[player][1];
     if (move == 'W')
@@ -81,12 +81,14 @@ int hitWalls(int rows, int cols, int players[][2],int player, int walls[][2], in
 
     
     
-}
+}*/
 
 
 
-void movePieces(int rows, int cols, int players[][2],int player, int walls[][2], char wallsstates[] ,int wallcount, char move, int *showerror){
-    if (move == 'W' && (players[player][0] <= 0 || hitWalls(rows, cols, players, player, walls, wallcount, wallsstates, 'W') == 1))
+void movePieces(int rows, int cols, int players[][2],int player, int walls[][2], char wallsstates[] ,int wallcount, char move, int *showerror, int isWall[][cols][2]){
+    int px = players[player][0];
+    int py = players[player][1];
+    if (move == 'W' && (px <= 0 || isWall[px - 1][py][0] == 1))
     {
         *showerror = 1;
     }
@@ -94,7 +96,7 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
     {
         players[player][0] -= 1;
     }
-    if (move == 'A' && (players[player][1] <= 0 || hitWalls(rows, cols, players, player, walls, wallcount, wallsstates , 'A') == 1))
+    if (move == 'A' && (py <= 0 || isWall[px][py - 1][1] == 1))
     {
         *showerror = 1;
     }
@@ -102,7 +104,7 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
     {
         players[player][1] -= 1;
     }
-    if (move == 'S' && (players[player][0] >= ( rows - 1) || hitWalls(rows, cols, players, player, walls, wallcount, wallsstates, 'S') == 1 ) )
+    if (move == 'S' && (px >= ( rows - 1) || isWall[px][py][0] == 1) )
     {
         *showerror = 1;
     }
@@ -110,7 +112,7 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
     {
         players[player][0] += 1;
     }
-    if (move == 'D' && (players[player][1] >= (cols - 1) ||  hitWalls(rows, cols, players, player, walls, wallcount, wallsstates,'D') == 1))
+    if (move == 'D' && (py >= (cols - 1) ||  isWall[px][py][1] == 1))
     {
         *showerror = 1;
     }
@@ -125,7 +127,7 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
 
 
 
-void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowWatcherCount, int players[][2], int player, int walls[][2], char wallStates[],int wallsCount){
+void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowWatcherCount, int players[][2], int player, int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2]){
     for (int i = 0; i < shadowWatcherCount; i++)
     {
         int px = players[player][0];
@@ -133,23 +135,52 @@ void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowW
 
         int shx = shadowWatcher[i][0];
         int shy = shadowWatcher[i][1]; 
-        if (shy - py > 0 && checkWall(walls, wallsCount, wallStates, 'V', shx, shy - 1) == 0)
+        if (shy - py > 0 && isWall[shx][shy - 1][1] == 0 && isWall[shx][shy - 2][1] == 0 )
+        {
+            shadowWatcher[i][1] -= 2;
+        }
+        else if (shy - py < 0 && isWall[shx][shy][1] == 0 && isWall[shx][shy + 1][1] == 0)
+        {
+            shadowWatcher[i][1] += 2;
+        }
+        else if (shy - py > 0 && isWall[shx][shy - 1][1] == 0)
         {
             shadowWatcher[i][1] -= 1;
+            if(shx - px > 0 && isWall[shx - 1][shy][0] == 0)
+            {
+                shadowWatcher[i][0] -= 1;
+            }
         }
-        else if (shy - py < 0 && checkWall(walls, wallsCount, wallStates, 'V', shx, shy) == 0)
+        else if(shy - py < 0 && isWall[shx][shy][1] == 0)
         {
             shadowWatcher[i][1] += 1;
-        }
-        if (shx - px > 0 && checkWall(walls, wallsCount, wallStates, 'H', shx -1, shy) == 0)
-        {
-            shadowWatcher[i][0] -= 1;
-        }
-        else if (shx - px < 0 && checkWall(walls, wallsCount, wallStates, 'H', shx, shy) == 0)
-        {
-            shadowWatcher[i][0] += 1;
+            if (shx - px < 0 && isWall[shx][shy][0] == 0)
+            {
+                shadowWatcher[i][0] += 1;
             
+            }
         }
+        else {
+            if (shx - px > 0 && isWall[shx - 1][shy][0] == 0 && isWall[shx - 2][shy][0] == 0 )
+            {
+                shadowWatcher[i][0] -= 2;
+            }
+            else if (shx - px < 0 && isWall[shx][shy][0] == 0 && isWall[shx + 1][shy][0] == 0)
+            {
+                shadowWatcher[i][0] += 2;
+            
+            }
+            else if (shx - px > 0 && isWall[shx - 1][shy][0] == 0 )
+            {
+                shadowWatcher[i][0] -= 1;
+            }
+            else if (shx - px < 0 && isWall[shx][shy][0] == 0)
+            {
+                shadowWatcher[i][0] += 1;
+            
+            } 
+        }
+        
         
         
         

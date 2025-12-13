@@ -35,8 +35,7 @@ void dfs(int x, int y, int n, int m, int sign[][m], int *counter, int isWall[][m
         dfs(x, y+1, n, m, sign, counter, isWall);
         }
     }
-void ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsState[]){
-    int isWall[n][m][2];
+void ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsState[], int isWall[][m][2]){
     for(int i = 0; i < n; i++){
         for(int j = 0; j < m; j++){
             isWall[i][j][0] = 0;
