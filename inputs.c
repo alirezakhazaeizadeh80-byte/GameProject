@@ -70,9 +70,9 @@ int ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsStat
                 if(counter!=n*m)isWall[X][Y][state]=0;
                 while(counter != n*m){
 
-                    if (time(NULL) - start >= 4)
+                    if (time(NULL) - start >= 1)
                     {
-                        printf("\033[31mThe number of walls is too high, Enter fewer.\n\033[0m\n");
+                        printf("\033[31mThe number of walls is too high, Enter fewer.\n\033[0m");
                         return 0;
                     }
 

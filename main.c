@@ -17,21 +17,20 @@ int main() {
     srand(time(NULL));
     int m,n;
     int playersCount;
-    int shadowWhatcherCount;
+    int huntersCount;
     int WallCount;
-    int ligthCoreH;
+    int lightCoreH;
     int lightCoreW;
     int showError;
     float maxsize;
-    bool gameover = false;
-    bool playerwon = false;
 
     printf("\n\033[32mWelcome to our game!\nthe minimum and maximum number of rows or columns is 5 and 12\nEnter the board dimensions : \033[0m");
     scanf("%d %d", &n, &m);
-    if (n < 5 || n > 12 || m < 5 || m > 12)
+    while (n < 5 || n > 12 || m < 5 || m > 12)
     {
         printf("\033[31mThe input is invlalid!\033[0m\n");
-        return 0;
+        printf("\033[32mEnter the board dimensions : \033[0m");
+        scanf("%d %d", &n, &m);
     }
     
     if (abs(n - m) < 4 )
@@ -45,36 +44,43 @@ int main() {
     {
         width = 500.0;
         height = 800.0;
-        maxsize = 100.0f;
+        maxsize = 120.0f;
     }
     else if (m - n >= 4)
     {
         width = 800.0;
         height = 500.0;
-        maxsize = 100.0f;
+        maxsize = 120.0f;
 
     }
     printf("\033[32mEnter the number of players : \033[0m");
     scanf("%d", &playersCount);
-    if(playersCount > 4 ){
+    while(playersCount > 4 ){
         printf("\033[31mThe input is invlalid!\033[0m");
-        return 0;
+        printf("\033[32m\nEnter the number of players : \033[0m");
+        scanf("%d", &playersCount);
     }
 
     int players[playersCount][2];
     printf("\033[32mEnter the number of hunters : \033[0m");
-    scanf("%d",&shadowWhatcherCount);
-    if (shadowWhatcherCount > n*m/2)
+    scanf("%d",&huntersCount);
+    while (huntersCount > n*m/4)
     {
         printf("\033[31mThe input is invlalid!\033[0m\n");
-        return 0;
+        printf("\033[32mEnter the number of hunters : \033[0m");
+        scanf("%d",&huntersCount);
     }
     
-    int shadowWhatchers[shadowWhatcherCount][2];
+    int hunters[huntersCount][2];
     printf("\033[32mEnter the number of walls (max = %d): \033[0m",n*m-n-m+1);
     scanf("%d",&WallCount);
     char WallsState[WallCount];
     int walls[WallCount][2];
+    int isWall[n][m][2];
+    while(ControllingWalls(WallCount, n, m, walls, WallsState, isWall) == 0){
+        printf("\033[32mEnter the number of walls (max = %d): \033[0m",n*m-n-m+1);
+        scanf("%d",&WallCount);
+    }
     float cellHeight = ((height - 40) / n);
     float cellWidth = ((width - 40) / m);
     int mark[n][m];
@@ -82,9 +88,9 @@ int main() {
         for(int j=0; j<m; j++)mark[i][j]=0;
     }
 
-    ligthCoreH = rand() % n;
+    lightCoreH = rand() % n;
     lightCoreW = rand() % m;
-    signing(ligthCoreH, lightCoreW, n, m, mark);
+    signing(lightCoreH, lightCoreW, n, m, mark);
 
     for (int i = 0; i < playersCount; i++)
     {
@@ -99,13 +105,13 @@ int main() {
         players[i][1] = Y;
     }
 
-    int isShadowWatcher[n][m];
+    int isHunter[n][m];
     for(int i=0; i<n; i++){
         for(int j=0; j<m; j++){
-            isShadowWatcher[i][j] = 0;
+            isHunter[i][j] = 0;
         }
     }
-    for (int i = 0; i < shadowWhatcherCount; i++)
+    for (int i = 0; i < huntersCount; i++)
     {
         int X = rand() % n;
         int Y = rand() % m;
@@ -114,12 +120,10 @@ int main() {
             Y = rand() % m;
         }
         signing(X, Y, n, m, mark);
-        isShadowWatcher[X][Y] = 1;
-        shadowWhatchers[i][0] = X;
-        shadowWhatchers[i][1] = Y;
+        isHunter[X][Y] = 1;
+        hunters[i][0] = X;
+        hunters[i][1] = Y;
     }
-    int isWall[n][m][2];
-    if(ControllingWalls(WallCount, n, m, walls, WallsState, isWall) == 0) return 0;
     
     InitWindow(width, height, "The legend of the Labyrinth");
     SetTargetFPS(60);
@@ -128,7 +132,7 @@ int main() {
     SetTextureFilter(pieceRed, TEXTURE_FILTER_TRILINEAR);
     Texture2D pieceBlue = LoadTexture("../pieces/bluePieces.png");
     SetTextureFilter(pieceBlue, TEXTURE_FILTER_TRILINEAR);
-    Font f = LoadFontEx("../fonts/LuckiestGuy-Regular.ttf", 100, 0, 0);
+    Font f = LoadFontEx("../fonts/LuckiestGuy-Regular.ttf", maxsize, 0, 0);
     SetTextureFilter(f.texture, TEXTURE_FILTER_TRILINEAR);
 
 
@@ -145,47 +149,56 @@ int main() {
 
     float fontsize = 10.0f;
     float speed = 50.0f;
-    
-    
-    
-    RenderTexture2D finalboard;
-
-    int c = 0;
+    int GameStoppage = 0;
+    float timer;
+    int pressed = 0;
     while (!WindowShouldClose())
     {
-        if(gameover == false && playerwon == false){
-            ClearBackground(Background);
+        
+        ClearBackground(Background);
 
-            BeginDrawing();
-
-
+        
+        
+        BeginDrawing();
+        
+        if(GameStoppage == 0){
             if (IsKeyPressed(KEY_W))
             {
+                timer = 0.0f;
+                pressed = 1;
                 movePieces(n, m, players, 0, walls, WallsState, WallCount,'W' , &showError, isWall);
-                if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
 
             }
             else if (IsKeyPressed(KEY_A))
             {
+                timer = 0.0f;
+                pressed = 1;
                 movePieces(n, m, players, 0, walls, WallsState, WallCount, 'A', &showError, isWall);
-                if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
 
             }
             else if (IsKeyPressed(KEY_S))
             {
+                timer = 0.0f;
+                pressed = 1;
                 movePieces(n, m, players, 0, walls,WallsState ,  WallCount, 'S' , &showError, isWall);
-                if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
 
             }
             else if (IsKeyPressed(KEY_D))
             {
+                timer = 0.0f;
+                pressed = 1;
                 movePieces(n, m, players, 0, walls, WallsState,  WallCount, 'D', &showError, isWall);
-                if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
             }
-            else if (IsKeyPressed(KEY_SPACE))
-            {
-                if(showError != 1) updateShadowWatchers(n, m, shadowWhatchers, shadowWhatcherCount, players, 0, walls, WallsState, WallCount, isWall, isShadowWatcher);
+            else if(IsKeyPressed(KEY_SPACE)){
+                timer = 0.0f;
+                pressed = 1;
             }
+            
+            if(showError != 1 && timer >= 0.5 && pressed == 1){
+                updateHunters(n, m, hunters, huntersCount, players, 0, walls, WallsState, WallCount, isWall, isHunter);
+                pressed = 0;
+            } 
+            timer += GetFrameTime();
             if (showError == 1) {
                 shakeTimeLeft = 0.2f;
                 showError = 0;
@@ -199,40 +212,21 @@ int main() {
 
             cam.offset = shakeOffset;
 
-
-
+        }
             BeginMode2D(cam);
 
             DrawGridB(n, m, cellWidth, cellHeight, height, width);
-            ShowingLightcore(ligthCoreH, lightCoreW, cellWidth, cellHeight);
+            ShowingLightcore(lightCoreH, lightCoreW, cellWidth, cellHeight);
+            
+            
+            
             Showingpieces(pieceRed, playersCount, players, cellWidth, cellHeight);
-            Showingpieces(pieceBlue, shadowWhatcherCount, shadowWhatchers, cellWidth, cellHeight);
+            Showingpieces(pieceBlue, huntersCount, hunters, cellWidth, cellHeight);
             ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight);
 
             EndMode2D();
-
-            Win(height, width, ligthCoreH, lightCoreW, players, 1, f, &fontsize, maxsize, speed, &playerwon);
-            Lose(height, width, m, players, playersCount, shadowWhatchers, isShadowWatcher, &fontsize, maxsize, speed, f, &gameover);
-        }
-        if (gameover == true || playerwon == true)
-        {
-            finalboard = LoadRenderTexture(width, height);
-            BeginTextureMode(finalboard);
-            DrawTextureRec(
-                finalboard.texture,
-                (Rectangle){0, 0, finalboard.texture.width, -finalboard.texture.height},
-                (Vector2){0, 0},
-                WHITE
-            );
-
-            DrawRectangle(
-                0, 0,
-                width, height,
-                Fade(BLACK, 0.6f)
-            );
-            EndTextureMode();
-            
-        }
+            Win(height, width, lightCoreH, lightCoreW, players, 1, f, &fontsize, maxsize, speed, &GameStoppage);
+            Lose(height, width, m, players, playersCount, hunters, isHunter, &fontsize, maxsize, speed, f, &GameStoppage, lightCoreH, lightCoreW);
         
 
         EndDrawing();

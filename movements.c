@@ -42,93 +42,92 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
     }
 
 
-
 }
 
 
 
-void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowWatcherCount, int players[][2], int player, int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isShadowWatcher[][cols]){
-    for (int i = 0; i < shadowWatcherCount; i++)
+void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int players[][2], int player, int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols]){
+    for (int i = 0; i < huntersCount; i++)
     {
         int px = players[player][0];
         int py = players[player][1];
 
-        int shx = shadowWatcher[i][0];
-        int shy = shadowWatcher[i][1]; 
-        if (shy - py > 1 && isWall[shx][shy - 1][1] == 0 && isWall[shx][shy - 2][1] == 0 && isShadowWatcher[shx][shy - 2] == 0)
+        int shx = hunters[i][0];
+        int shy = hunters[i][1]; 
+        if (shy - py > 1 && isWall[shx][shy - 1][1] == 0 && isWall[shx][shy - 2][1] == 0 && isHunter[shx][shy - 2] == 0)
         {
-            isShadowWatcher[shx][shy] = 0;
-            isShadowWatcher[shx][shy - 2] = 1;
-            shadowWatcher[i][1] -= 2;
+            isHunter[shx][shy] = 0;
+            isHunter[shx][shy - 2] = 1;
+            hunters[i][1] -= 2;
         }
-        else if (shy - py < -1 && isWall[shx][shy][1] == 0 && isWall[shx][shy + 1][1] == 0 && isShadowWatcher[shx][shy + 2] == 0)
+        else if (shy - py < -1 && isWall[shx][shy][1] == 0 && isWall[shx][shy + 1][1] == 0 && isHunter[shx][shy + 2] == 0)
         {
-            isShadowWatcher[shx][shy] = 0;
-            isShadowWatcher[shx][shy + 2] = 1;
-            shadowWatcher[i][1] += 2;
+            isHunter[shx][shy] = 0;
+            isHunter[shx][shy + 2] = 1;
+            hunters[i][1] += 2;
         }
-        else if (shy - py > 0 && isWall[shx][shy - 1][1] == 0 && isShadowWatcher[shx][shy - 1] == 0)
+        else if (shy - py > 0 && isWall[shx][shy - 1][1] == 0 && isHunter[shx][shy - 1] == 0)
         {
-            isShadowWatcher[shx][shy] = 0;
-            isShadowWatcher[shx][shy - 1] = 1;
-            shadowWatcher[i][1] -= 1;
-            if(shx - px > 0 && isWall[shx - 1][shy - 1][0] == 0 && isShadowWatcher[shx - 1][shy - 1] == 0)
+            isHunter[shx][shy] = 0;
+            isHunter[shx][shy - 1] = 1;
+            hunters[i][1] -= 1;
+            if(shx - px > 0 && isWall[shx - 1][shy - 1][0] == 0 && isHunter[shx - 1][shy - 1] == 0)
             {
-                isShadowWatcher[shx][shy - 1] = 0;
-                isShadowWatcher[shx - 1][shy - 1] = 1;
-                shadowWatcher[i][0] -= 1;
+                isHunter[shx][shy - 1] = 0;
+                isHunter[shx - 1][shy - 1] = 1;
+                hunters[i][0] -= 1;
             }
-            else if(shx - px < 0 && isWall[shx][shy - 1][0] == 0 && isShadowWatcher[shx + 1][shy - 1] == 0)
+            else if(shx - px < 0 && isWall[shx][shy - 1][0] == 0 && isHunter[shx + 1][shy - 1] == 0)
             {
-                isShadowWatcher[shx][shy - 1] = 0;
-                isShadowWatcher[shx + 1][shy - 1] = 1;
-                shadowWatcher[i][0] += 1;
+                isHunter[shx][shy - 1] = 0;
+                isHunter[shx + 1][shy - 1] = 1;
+                hunters[i][0] += 1;
             }
 
         }
-        else if(shy - py < 0 && isWall[shx][shy][1] == 0 && isShadowWatcher[shx][shy + 1] == 0)
+        else if(shy - py < 0 && isWall[shx][shy][1] == 0 && isHunter[shx][shy + 1] == 0)
         {
-            isShadowWatcher[shx][shy] = 0;
-            isShadowWatcher[shx][shy + 1] = 1;
-            shadowWatcher[i][1] += 1;
-            if(shx - px > 0 && isWall[shx - 1][shy + 1][0] == 0 && isShadowWatcher[shx - 1][shy + 1] == 0)
+            isHunter[shx][shy] = 0;
+            isHunter[shx][shy + 1] = 1;
+            hunters[i][1] += 1;
+            if(shx - px > 0 && isWall[shx - 1][shy + 1][0] == 0 && isHunter[shx - 1][shy + 1] == 0)
             {
-                isShadowWatcher[shx][shy + 1] = 0;
-                isShadowWatcher[shx - 1][shy + 1] = 1;
-                shadowWatcher[i][0] -= 1;
+                isHunter[shx][shy + 1] = 0;
+                isHunter[shx - 1][shy + 1] = 1;
+                hunters[i][0] -= 1;
             }
-            else if(shx - px < 0 && isWall[shx][shy + 1][0] == 0 && isShadowWatcher[shx + 1][shy + 1] == 0)
+            else if(shx - px < 0 && isWall[shx][shy + 1][0] == 0 && isHunter[shx + 1][shy + 1] == 0)
             {
-                isShadowWatcher[shx][shy + 1] = 0;
-                isShadowWatcher[shx + 1][shy + 1] = 1;
-                shadowWatcher[i][0] += 1;
+                isHunter[shx][shy + 1] = 0;
+                isHunter[shx + 1][shy + 1] = 1;
+                hunters[i][0] += 1;
             }
         }
         else {
-            if (shx - px > 1 && isWall[shx - 1][shy][0] == 0 && isWall[shx - 2][shy][0] == 0 && isShadowWatcher[shx - 2][shy] == 0)
+            if (shx - px > 1 && isWall[shx - 1][shy][0] == 0 && isWall[shx - 2][shy][0] == 0 && isHunter[shx - 2][shy] == 0)
             {
-                isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx - 2][shy] = 1;
-                shadowWatcher[i][0] -= 2;
+                isHunter[shx][shy] = 0;
+                isHunter[shx - 2][shy] = 1;
+                hunters[i][0] -= 2;
             }
-            else if (shx - px < -1 && isWall[shx][shy][0] == 0 && isWall[shx + 1][shy][0] == 0 && isShadowWatcher[shx + 2][shy] == 0)
+            else if (shx - px < -1 && isWall[shx][shy][0] == 0 && isWall[shx + 1][shy][0] == 0 && isHunter[shx + 2][shy] == 0)
             {
-                isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx + 2][shy] = 1;
-                shadowWatcher[i][0] += 2;
+                isHunter[shx][shy] = 0;
+                isHunter[shx + 2][shy] = 1;
+                hunters[i][0] += 2;
             
             }
-            else if (shx - px > 0 && isWall[shx - 1][shy][0] == 0 && isShadowWatcher[shx - 1][shy] == 0)
+            else if (shx - px > 0 && isWall[shx - 1][shy][0] == 0 && isHunter[shx - 1][shy] == 0)
             {
-                isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx - 1][shy] = 1;
-                shadowWatcher[i][0] -= 1;
+                isHunter[shx][shy] = 0;
+                isHunter[shx - 1][shy] = 1;
+                hunters[i][0] -= 1;
             }
-            else if (shx - px < 0 && isWall[shx][shy][0] == 0 && isShadowWatcher[shx + 1][shy] == 0)
+            else if (shx - px < 0 && isWall[shx][shy][0] == 0 && isHunter[shx + 1][shy] == 0)
             {
-                isShadowWatcher[shx][shy] = 0;
-                isShadowWatcher[shx + 1][shy] = 1;
-                shadowWatcher[i][0] += 1;
+                isHunter[shx][shy] = 0;
+                isHunter[shx + 1][shy] = 1;
+                hunters[i][0] += 1;
             
             } 
         }
@@ -142,7 +141,7 @@ void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowW
 }
 
 
-void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2], int playerCount, Font f, float *fontsize, float maxsize, float speed, bool *playerwon){
+void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2], int playerCount, Font f, float *fontsize, float maxsize, float speed, int *GameStoppage){
     for(int i = 0; i < playerCount; i++){
         if (players[i][0] == lightcoreX && players[i][1] == lightcoreY)
         {
@@ -158,21 +157,19 @@ void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2],
             Vector2 pos = {width/2 , height/2};
             Vector2 origin = {textSize.x / 2, textSize.y/2};
             DrawTextPro(f, str, pos, origin, 0.0f, *fontsize, 2, color);
-            
-            if(*fontsize == maxsize) *playerwon = true;
-
+            *GameStoppage=1;
         }
         
 
     }
 }
 
-void Lose(int height, int width, int cols,int players[][2], int playerCount , int shaowWatcher[][2], int isShadowWatcher[][cols], float *fontsize,float maxsize, float speed , Font f, bool *gameover){
+void Lose(int height, int width, int cols,int players[][2], int playerCount , int hunters[][2], int isHunter[][cols], float *fontsize,float maxsize, float speed , Font f, int *GameStoppage, int LightcoreH, int LightcoreW){
     for (int i = 0; i < playerCount; i++)
     {
         int px = players[i][0];
         int py = players[i][1];
-        if (isShadowWatcher[px][py] == 1)
+        if (isHunter[px][py] == 1 && (px!=LightcoreH || py!=LightcoreW))
         {
             if (*fontsize < maxsize)
             {
@@ -187,15 +184,12 @@ void Lose(int height, int width, int cols,int players[][2], int playerCount , in
             Vector2 pos = {width/2 , height/2};
             Vector2 origin = {textSize.x / 2, textSize.y/2};
             DrawTextPro(f, str, pos, origin, 0.0f, *fontsize, 2, color);
-            
-            if(*fontsize == maxsize) *gameover = true;
+            *GameStoppage=1;
         }
         
     }
-    
-
-
 }
+
 
 
 
