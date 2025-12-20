@@ -1,5 +1,7 @@
 #include "movements.h"
 #include "raylib.h"
+#include <stdbool.h>
+
 
 
 
@@ -140,7 +142,7 @@ void updateShadowWatchers(int row, int cols, int shadowWatcher[][2], int shadowW
 }
 
 
-void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2], int playerCount, Font f, float *fontsize, float maxsize, float speed){
+void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2], int playerCount, Font f, float *fontsize, float maxsize, float speed, bool *playerwon){
     for(int i = 0; i < playerCount; i++){
         if (players[i][0] == lightcoreX && players[i][1] == lightcoreY)
         {
@@ -157,12 +159,15 @@ void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2],
             Vector2 origin = {textSize.x / 2, textSize.y/2};
             DrawTextPro(f, str, pos, origin, 0.0f, *fontsize, 2, color);
             
+            if(*fontsize == maxsize) *playerwon = true;
+
         }
+        
 
-}
+    }
 }
 
-void Lose(int height, int width, int cols,int players[][2], int playerCount , int shaowWatcher[][2], int isShadowWatcher[][cols], float *fontsize,float maxsize, float speed , Font f){
+void Lose(int height, int width, int cols,int players[][2], int playerCount , int shaowWatcher[][2], int isShadowWatcher[][cols], float *fontsize,float maxsize, float speed , Font f, bool *gameover){
     for (int i = 0; i < playerCount; i++)
     {
         int px = players[i][0];
@@ -183,11 +188,11 @@ void Lose(int height, int width, int cols,int players[][2], int playerCount , in
             Vector2 origin = {textSize.x / 2, textSize.y/2};
             DrawTextPro(f, str, pos, origin, 0.0f, *fontsize, 2, color);
             
+            if(*fontsize == maxsize) *gameover = true;
         }
         
     }
     
-
 
 
 }
