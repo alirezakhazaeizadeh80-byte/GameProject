@@ -44,7 +44,7 @@ int main() {
     {
         width = 500.0;
         height = 800.0;
-        maxsize = 120.0f;
+        maxsize = 100.0f;
     }
     else if (m - n >= 4)
     {
@@ -152,6 +152,7 @@ int main() {
     int GameStoppage = 0;
     float timer;
     int pressed = 0;
+    int error;
     while (!WindowShouldClose())
     {
         
@@ -162,39 +163,44 @@ int main() {
         BeginDrawing();
         
         if(GameStoppage == 0){
-            if (IsKeyPressed(KEY_W))
+            if (IsKeyPressed(KEY_W) && timer > 0.3)
             {
                 timer = 0.0f;
                 pressed = 1;
                 movePieces(n, m, players, 0, walls, WallsState, WallCount,'W' , &showError, isWall);
+                error = showError;
 
             }
-            else if (IsKeyPressed(KEY_A))
+            else if (IsKeyPressed(KEY_A) && timer > 0.3)
             {
                 timer = 0.0f;
                 pressed = 1;
                 movePieces(n, m, players, 0, walls, WallsState, WallCount, 'A', &showError, isWall);
+                error = showError;
 
             }
-            else if (IsKeyPressed(KEY_S))
+            else if (IsKeyPressed(KEY_S) && timer > 0.3)
             {
                 timer = 0.0f;
                 pressed = 1;
                 movePieces(n, m, players, 0, walls,WallsState ,  WallCount, 'S' , &showError, isWall);
+                error = showError;
 
             }
-            else if (IsKeyPressed(KEY_D))
+            else if (IsKeyPressed(KEY_D) && timer > 0.3)
             {
                 timer = 0.0f;
                 pressed = 1;
                 movePieces(n, m, players, 0, walls, WallsState,  WallCount, 'D', &showError, isWall);
+                error = showError;
             }
-            else if(IsKeyPressed(KEY_SPACE)){
+            else if(IsKeyPressed(KEY_SPACE) && timer > 0.3){
                 timer = 0.0f;
                 pressed = 1;
+                if(error == 1)error = 0;
             }
             
-            if(showError != 1 && timer >= 0.5 && pressed == 1){
+            if(error != 1 && timer >= 0.3 && pressed == 1){
                 updateHunters(n, m, hunters, huntersCount, players, 0, walls, WallsState, WallCount, isWall, isHunter);
                 pressed = 0;
             } 
