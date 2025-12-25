@@ -124,6 +124,15 @@ int main() {
         hunters[i][0] = X;
         hunters[i][1] = Y;
     }
+    int PlHuDistance[huntersCount][playersCount];
+    for (int i = 0; i < huntersCount; i++)
+    {
+        for (int j = 0; j < playersCount; j++)
+        {
+            PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
+        }
+    }
+    
     
     InitWindow(width, height, "The legend of the Labyrinth");
     SetTargetFPS(60);
@@ -201,7 +210,7 @@ int main() {
             }
             
             if(error != 1 && timer >= 0.3 && pressed == 1){
-                updateHunters(n, m, hunters, huntersCount, players, 0, walls, WallsState, WallCount, isWall, isHunter);
+                updateHunters(n, m , hunters, huntersCount, players, playersCount, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
                 pressed = 0;
             } 
             timer += GetFrameTime();
@@ -231,12 +240,13 @@ int main() {
             ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight);
 
             EndMode2D();
-            Win(height, width, lightCoreH, lightCoreW, players, 1, f, &fontsize, maxsize, speed, &GameStoppage);
+            Win(height, width, lightCoreH, lightCoreW, players, playersCount, f, &fontsize, maxsize, speed, &GameStoppage);
             Lose(height, width, m, players, playersCount, hunters, isHunter, &fontsize, maxsize, speed, f, &GameStoppage, lightCoreH, lightCoreW);
         
 
         EndDrawing();
     }
+    
     
 
 

@@ -44,11 +44,28 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
 
 }
 
+int searchNearestPlayer(int hunter ,int playerCount , int huntersCount ,int PlHuDistance[huntersCount][playerCount]  ){
+    int min = 30;
+    int ans;
+    for (int i = 0; i < playerCount; i++)
+    {
+        if (PlHuDistance[hunter][i] < min){
+            min = PlHuDistance[hunter][i];
+            ans = i;
+        
+        }
+    }
+    return ans;
 
+    
 
-void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int players[][2], int player, int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols]){
+}
+
+void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int players[][2],int playerCount, int PlHuDistance[huntersCount][playerCount] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols]){
+    
     for (int i = 0; i < huntersCount; i++)
     {
+        int player = searchNearestPlayer(i, playerCount, huntersCount, PlHuDistance);
         int px = players[player][0];
         int py = players[player][1];
 
