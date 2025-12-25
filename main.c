@@ -9,6 +9,8 @@
 # include "movements.h"
 # include <time.h>
 # include <stdbool.h>
+# include <string.h>
+
 
 
 int main() {
@@ -74,8 +76,13 @@ int main() {
     int hunters[huntersCount][2];
     printf("\033[32mEnter the number of walls (max = %d): \033[0m",n*m-n-m+1);
     scanf("%d",&WallCount);
-    char WallsState[WallCount];
-    int walls[WallCount][2];
+    char WallsState[n*m-n-m+1];
+    int walls[n*m-n-m+1][2];
+    // for (int i = 0; i < WallCount; i++)
+    // {
+    //     walls[i][2] = -1;
+    // }
+    
     int isWall[n][m][2];
     while(ControllingWalls(WallCount, n, m, walls, WallsState, isWall) == 0){
         printf("\033[32mEnter the number of walls (max = %d): \033[0m",n*m-n-m+1);
@@ -85,7 +92,7 @@ int main() {
     float cellWidth = ((width - 40) / m);
     int mark[n][m];
     for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++)mark[i][j]=0;
+        for (int j=0; j<m; j++) mark[i][j] = 0;
     }
 
     lightCoreH = rand() % n;
@@ -132,9 +139,10 @@ int main() {
             PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
         }
     }
+    int TempWallcounter = max(min(n, m) / 3, 1);
     
     
-    InitWindow(width, height, "The legend of the Labyrinth");
+    InitWindow(width, height, "The Tale of the Labyrinth");
     SetTargetFPS(60);
     Color Background = {213, 249, 222, 1};
     Texture2D pieceRed = LoadTexture("../pieces/redPieces.png");
@@ -159,7 +167,7 @@ int main() {
     float fontsize = 10.0f;
     float speed = 50.0f;
     int GameStoppage = 0;
-    float timer;
+    float timer = -1;
     int pressed = 0;
     int error;
     int player = -1;
@@ -167,8 +175,14 @@ int main() {
     int counter = 0;
     int playerMoved[playersCount];
     for(int i=0; i<playersCount; i++)playerMoved[i] = 0;
+
+
+
+    Rectangle BlaWalls[n][m][2];
     while (!WindowShouldClose())
     {
+        
+        
         for (int i = 0; i < huntersCount; i++)
         {
             for (int j = 0; j < playersCount; j++)
@@ -177,18 +191,43 @@ int main() {
             }
         }
         
-        ClearBackground(Background);
-
         
+        
+        
+        ClearBackground(Background);
         
         BeginDrawing();
+        tempWalls(n, m, cellWidth, cellHeight, BlaWalls);
         
         if(GameStoppage == 0){
+
+            if (IsKeyDown(KEY_T))
+            {
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    Vector2 mousePos = GetMousePosition();
+                if (TempWallcounter > 0){ 
+                    if(ShowingTempWalls (n, m, walls, &WallCount, WallsState, &TempWallcounter, isWall, mousePos, BlaWalls) == 1){
+                        updateHunters(n, m, hunters, huntersCount, players, playersCount, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
+
+                    }
+
+                }
+            }
+                
+
+                Vector2 mousePos = GetMousePosition();
+
+                showTempWall(mousePos,n,m,cellWidth,cellHeight,isWall, BlaWalls);
+            }
+            
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                // Vector2 mousePos = GetMousePosition();
+                // if (TempWallcounter > 0) ShowingTempWalls (n, m, walls, &WallCount, WallsState, &TempWallcounter, isWall, mousePos, BlaWalls);
+                
                 int x = GetMouseX();
                 int y = GetMouseY();
-                int cellX = (x)/cellHeight;
-                int cellY = (y)/cellWidth;
+                int cellX = (x)/cellWidth;
+                int cellY = (y)/cellHeight;
                 //printf("cell = (%d, %d)\n", cellX, cellY);
                 for(int i=0; i<playersCount; i++){
                     if(players[i][1] == cellX && players[i][0] == cellY && playerMoved[i] == 0){
@@ -197,16 +236,21 @@ int main() {
                         break;
                     }
                 }
-                if(sw == 0)player = -1;
+
+                if(sw == 0) player = -1;
                 //else {printf("%d\n", playerMoved[player]); printf("%d\n", player);}
                 sw = 0;
                 
             }
+            if (IsKeyDown(KEY_T))
+            {
+                //
+            }
+            
             if (IsKeyPressed(KEY_W))
             {
                 movePieces(n, m, players, player, walls, WallsState, WallCount,'W' , &showError, isWall);
                 if(player != -1){playerMoved[player] = 1;}
-
             }
             else if (IsKeyPressed(KEY_A))
             {
