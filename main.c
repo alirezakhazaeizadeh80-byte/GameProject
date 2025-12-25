@@ -162,8 +162,20 @@ int main() {
     float timer;
     int pressed = 0;
     int error;
+    int player = -1;
+    int sw = 0;
+    int counter = 0;
+    int playerMoved[playersCount];
+    for(int i=0; i<playersCount; i++)playerMoved[i] = 0;
     while (!WindowShouldClose())
     {
+        for (int i = 0; i < huntersCount; i++)
+        {
+            for (int j = 0; j < playersCount; j++)
+            {
+                PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
+            }
+        }
         
         ClearBackground(Background);
 
@@ -172,48 +184,66 @@ int main() {
         BeginDrawing();
         
         if(GameStoppage == 0){
-            if (IsKeyPressed(KEY_W) && timer > 0.3)
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                int x = GetMouseX();
+                int y = GetMouseY();
+                int cellX = (x)/cellHeight;
+                int cellY = (y)/cellWidth;
+                //printf("cell = (%d, %d)\n", cellX, cellY);
+                for(int i=0; i<playersCount; i++){
+                    if(players[i][1] == cellX && players[i][0] == cellY && playerMoved[i] == 0){
+                        player = i;
+                        sw = 1;
+                        break;
+                    }
+                }
+                if(sw == 0)player = -1;
+                //else {printf("%d\n", playerMoved[player]); printf("%d\n", player);}
+                sw = 0;
+                
+            }
+            if (IsKeyPressed(KEY_W))
             {
-                timer = 0.0f;
-                pressed = 1;
-                movePieces(n, m, players, 0, walls, WallsState, WallCount,'W' , &showError, isWall);
-                error = showError;
+                movePieces(n, m, players, player, walls, WallsState, WallCount,'W' , &showError, isWall);
+                if(player != -1){playerMoved[player] = 1;}
 
             }
-            else if (IsKeyPressed(KEY_A) && timer > 0.3)
+            else if (IsKeyPressed(KEY_A))
             {
-                timer = 0.0f;
-                pressed = 1;
-                movePieces(n, m, players, 0, walls, WallsState, WallCount, 'A', &showError, isWall);
-                error = showError;
+                movePieces(n, m, players, player, walls, WallsState, WallCount, 'A', &showError, isWall);
+                if(player != -1){playerMoved[player] = 1;}
+            }
+            else if (IsKeyPressed(KEY_S))
+            {
+                movePieces(n, m, players, player, walls, WallsState ,  WallCount, 'S' , &showError, isWall);
+                if(player != -1){playerMoved[player] = 1;}
 
             }
-            else if (IsKeyPressed(KEY_S) && timer > 0.3)
+            else if (IsKeyPressed(KEY_D))
             {
-                timer = 0.0f;
-                pressed = 1;
-                movePieces(n, m, players, 0, walls,WallsState ,  WallCount, 'S' , &showError, isWall);
-                error = showError;
-
+                movePieces(n, m, players, player, walls, WallsState,  WallCount, 'D', &showError, isWall);
+                if(player != -1){playerMoved[player] = 1;}
             }
-            else if (IsKeyPressed(KEY_D) && timer > 0.3)
-            {
-                timer = 0.0f;
-                pressed = 1;
-                movePieces(n, m, players, 0, walls, WallsState,  WallCount, 'D', &showError, isWall);
-                error = showError;
+            else if(IsKeyPressed(KEY_SPACE)){
+                if(player != -1){playerMoved[player] = 1;}
             }
-            else if(IsKeyPressed(KEY_SPACE) && timer > 0.3){
-                timer = 0.0f;
-                pressed = 1;
-                if(error == 1)error = 0;
+            if(player != -1 && playerMoved[player] == 1){
+                counter++;
+                player = -1;
             }
-            
-            if(error != 1 && timer >= 0.3 && pressed == 1){
-                updateHunters(n, m , hunters, huntersCount, players, playersCount, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
-                pressed = 0;
-            } 
-            timer += GetFrameTime();
+            if(counter == playersCount){
+                if(timer == -1){
+                    timer = 0;
+                }
+                //printf("%d\n", counter);
+                counter = 0;
+                for(int i=0; i<playersCount; i++)playerMoved[i] = 0;
+            }
+            if(timer != -1)timer += GetFrameTime();
+            if(timer >= 0.4){
+                updateHunters(n, m, hunters, huntersCount, players, playersCount, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
+                timer = -1;
+            }
             if (showError == 1) {
                 shakeTimeLeft = 0.2f;
                 showError = 0;

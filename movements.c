@@ -6,6 +6,7 @@
 
 
 void movePieces(int rows, int cols, int players[][2],int player, int walls[][2], char wallsstates[] ,int wallcount, char move, int *showerror, int isWall[][cols][2]){
+    if(player == -1)return;
     int px = players[player][0];
     int py = players[player][1];
     if (move == 'W' && (px <= 0 || isWall[px - 1][py][0] == 1))
