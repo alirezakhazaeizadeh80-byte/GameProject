@@ -1,16 +1,5 @@
 # include "board.h"
 
-<<<<<<< HEAD
-void DrawGridB(int rows, int cols, int cellWidth, int cellHeight, int height, int width){
-    for (int c = 0; c <= cols; c++)
-        {
-            DrawLine((c*cellWidth)+ 20, 20, (c*cellWidth) + 20, height -20, BLACK);
-        }
-    for (int r = 0; r <= rows; r++)
-        {
-            DrawLine(20, (r*cellHeight) +20, width - 20, (r*cellHeight) +20, BLACK);
-        }
-=======
 int min(int x1, int x2){
     if (x1 < x2) return x1;
     else return x2;
@@ -31,7 +20,6 @@ void DrawGridB(int rows, int cols, int cellWidth, int cellHeight, int height, in
             DrawLine(20, (r*cellHeight) +20, width - 20, (r*cellHeight) + 20, BLACK);
         }
         //DrawRectangleLines(20, 20, width - 40, height - 40, BLACK);
->>>>>>> develop
 }
 
 
@@ -52,39 +40,6 @@ void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth
     }
 }
 
-<<<<<<< HEAD
-void ShowingWalls(int wallCount ,int walls[][2], char wallsState[], int cellWidth, int cellHeight){
-    for (int i = 0; i < wallCount; i++)
-    {
-        if (wallsState[i] == 'H') 
-        {
-            int startXH = ((walls[i][1]) * cellWidth) + 20;
-            int endXH = ((walls[i][1] + 1) * cellWidth) + 20;
-            int startYH = ((walls[i][0] + 1) * cellHeight) + 20;
-            int endYH = ((walls[i][0] + 1) * cellHeight) + 20;
-            Vector2 startH = {startXH , startYH};
-            Vector2 endH = {endXH , endYH};
-            DrawLineEx(startH, endH, 5.0f, BLACK);
-        }
-        else if (wallsState[i] == 'V')
-        {
-            int startXV = ((walls[i][1] + 1) * cellWidth) + 20;
-            int endXV = ((walls[i][1] + 1) * cellWidth) + 20;
-            int startYV = ((walls[i][0]) * cellHeight) + 20;
-            int endYV = ((walls[i][0] + 1) * cellHeight) + 20;
-            Vector2 startV = {startXV , startYV};
-            Vector2 endV = {endXV , endYV};
-            DrawLineEx(startV, endV, 5.0f, BLACK);
-        }
-
-        
-    }
-    
-
-}
-
-
-=======
 
 
 void tempWalls(int rows, int cols, int cellWidth, int cellHeight, Rectangle BlaWalls[rows][cols][2]){
@@ -208,4 +163,3 @@ void showTempWall(Vector2 mousePos, int rows, int cols, int cellWidth, int cellH
 }
 }
 
->>>>>>> develop
