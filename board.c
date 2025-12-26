@@ -60,31 +60,33 @@ void tempWalls(int rows, int cols, int cellWidth, int cellHeight, Rectangle BlaW
         }
     }
 }
-int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wallsState[], int* tempWallConter, int isWall[rows][cols][2], Vector2 mousePos, Rectangle BlaWalls[rows][cols][2]){
+int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wallsState[], int* tempWallCounter, int isWall[rows][cols][2], Vector2 mousePos, Rectangle BlaWalls[rows][cols][2], int wallTurn[]){
     
     for (int i = 0; i < rows; i++)
     {
         for (int j = 0; j < cols; j++){
-            if (CheckCollisionPointRec(mousePos, BlaWalls[i][j][1]) && isWall[i][j][1] == 0){
+            if (CheckCollisionPointRec(mousePos, BlaWalls[i][j][1])){
                 walls[*wallCount][0] = i;
                 walls[*wallCount][1] = j-1;
                 wallsState[*wallCount] = 'V';
                 isWall[i][j-1][1] = 1;
                 walls[*wallCount][2] = 2;
+                wallTurn[*wallCount] = 2;
                 *wallCount += 1;
-                *tempWallConter -= 1;
+                *tempWallCounter -= 1;
                 return 1;
                 
                 
             }
-            if (CheckCollisionPointRec(mousePos, BlaWalls[i][j][0]) &&  isWall[i][j][0] == 0){
+            if (CheckCollisionPointRec(mousePos, BlaWalls[i][j][0])){
                 walls[*wallCount][0] = i-1;
                 walls[*wallCount][1] = j;
                 wallsState[*wallCount] = 'H';
                 isWall[i-1][j][0] = 1;
                 walls[*wallCount][2] = 2;
+                wallTurn[*wallCount] = 2;
                 *wallCount += 1;
-                *tempWallConter -= 1;
+                *tempWallCounter -= 1;
                 return 1;
             }
             
@@ -102,32 +104,10 @@ int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wa
 
 
 
-void ShowingWalls(int wallCount ,int walls[][2], char wallsState[], int cellWidth, int cellHeight){
+void ShowingWalls(int wallCount ,int walls[][2], char wallsState[], int cellWidth, int cellHeight, int wallTurn[]){
     for (int i = 0; i < wallCount; i++)
     {
-        if(walls[i][2] == -1){
-            if (wallsState[i] == 'H')
-            {
-                int startXH = ((walls[i][1]) * cellWidth) + 20;
-                int endXH = ((walls[i][1] + 1) * cellWidth) + 20;
-                int startYH = ((walls[i][0] + 1) * cellHeight) + 20;
-                int endYH = ((walls[i][0] + 1) * cellHeight) + 20;
-                Vector2 startH = {startXH , startYH};
-                Vector2 endH = {endXH , endYH};
-                DrawLineEx(startH, endH, 5.0f, BLACK);
-            }
-            else if (wallsState[i] == 'V')
-            {
-                int startXV = ((walls[i][1] + 1) * cellWidth) + 20;
-                int endXV = ((walls[i][1] + 1) * cellWidth) + 20;
-                int startYV = ((walls[i][0]) * cellHeight) + 20;
-                int endYV = ((walls[i][0] + 1) * cellHeight) + 20;
-                Vector2 startV = {startXV , startYV};
-                Vector2 endV = {endXV , endYV};
-                DrawLineEx(startV, endV, 5.0f, BLACK);
-            }
-        }
-        if(walls[i][2] > 0){
+        if(wallTurn[i] == -1 || wallTurn[i] > 0){
             if (wallsState[i] == 'H')
             {
                 int startXH = ((walls[i][1]) * cellWidth) + 20;
@@ -167,7 +147,8 @@ void showTempWall(Vector2 mousePos, int rows, int cols, int cellWidth, int cellH
                 walls[0][1] = j-1;
                 char wallstate[1];
                 wallstate[0] = 'V';
-                ShowingWalls(1,  walls, wallstate, cellWidth, cellHeight);
+                int wallturn[200] = {-1};
+                ShowingWalls(1,  walls, wallstate, cellWidth, cellHeight, wallturn);
                 
             }
             if (CheckCollisionPointRec(mousePos, BlaWalls[i][j][0])){
@@ -175,8 +156,8 @@ void showTempWall(Vector2 mousePos, int rows, int cols, int cellWidth, int cellH
                 walls[0][1] = j;
                 char wallstate[1];
                 wallstate[0] = 'H';
-
-                ShowingWalls(1,  walls, wallstate, cellWidth, cellHeight);
+                int wallturn[200] = {-1};
+                ShowingWalls(1,  walls, wallstate, cellWidth, cellHeight, wallturn);
             }
         }
 }

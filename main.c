@@ -76,12 +76,14 @@ int main() {
     int hunters[huntersCount][2];
     printf("\033[32mEnter the number of walls (max = %d): \033[0m",n*m-n-m+1);
     scanf("%d",&WallCount);
-    char WallsState[n*m-n-m+1];
-    int walls[n*m-n-m+1][2];
-    // for (int i = 0; i < WallCount; i++)
-    // {
-    //     walls[i][2] = -1;
-    // }
+    char WallsState[300];
+    int walls[300][2];
+
+    int wallTurn[300];
+    for (int i = 0; i < WallCount; i++)
+    {
+        wallTurn[i] = -1;
+    }
     
     int isWall[n][m][2];
     while(ControllingWalls(WallCount, n, m, walls, WallsState, isWall) == 0){
@@ -151,19 +153,19 @@ int main() {
     SetTextureFilter(pieceBlue, TEXTURE_FILTER_TRILINEAR);
     Font f = LoadFontEx("../fonts/LuckiestGuy-Regular.ttf", maxsize, 0, 0);
     SetTextureFilter(f.texture, TEXTURE_FILTER_TRILINEAR);
-
-
+    
+    
     Camera2D cam = {0};
     cam.offset = (Vector2){0, 0};
     cam.target = (Vector2){0, 0};
     cam.zoom = 1.0f;
 
-
+    
     float shakeTimeLeft = 0.0f;
     float shakeIntensity = 5.0f;
-
+    
     Vector2 shakeOffset = {0, 0};
-
+    
     float fontsize = 10.0f;
     float speed = 50.0f;
     int GameStoppage = 0;
@@ -175,9 +177,9 @@ int main() {
     int counter = 0;
     int playerMoved[playersCount];
     for(int i=0; i<playersCount; i++)playerMoved[i] = 0;
-
-
-
+    
+    
+    
     Rectangle BlaWalls[n][m][2];
     while (!WindowShouldClose())
     {
@@ -197,17 +199,19 @@ int main() {
         ClearBackground(Background);
         
         BeginDrawing();
+        BeginMode2D(cam);
         tempWalls(n, m, cellWidth, cellHeight, BlaWalls);
         
         if(GameStoppage == 0){
-
+            
             if (IsKeyDown(KEY_T))
             {
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                     Vector2 mousePos = GetMousePosition();
-                if (TempWallcounter > 0){ 
-                    if(ShowingTempWalls (n, m, walls, &WallCount, WallsState, &TempWallcounter, isWall, mousePos, BlaWalls) == 1){
+                if (TempWallcounter > -1000){ 
+                    if(ShowingTempWalls (n, m, walls, &WallCount, WallsState, &TempWallcounter, isWall, mousePos, BlaWalls, wallTurn) == 1){
                         updateHunters(n, m, hunters, huntersCount, players, playersCount, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
+                        
 
                     }
 
@@ -241,10 +245,6 @@ int main() {
                 //else {printf("%d\n", playerMoved[player]); printf("%d\n", player);}
                 sw = 0;
                 
-            }
-            if (IsKeyDown(KEY_T))
-            {
-                //
             }
             
             if (IsKeyPressed(KEY_W))
@@ -286,6 +286,11 @@ int main() {
             if(timer != -1)timer += GetFrameTime();
             if(timer >= 0.4){
                 updateHunters(n, m, hunters, huntersCount, players, playersCount, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
+                for (int i = WallCount - 1; wallTurn[i] > 0; i--)
+                {
+                    wallTurn[i]--;
+                }
+                
                 timer = -1;
             }
             if (showError == 1) {
@@ -302,7 +307,7 @@ int main() {
             cam.offset = shakeOffset;
 
         }
-            BeginMode2D(cam);
+
 
             DrawGridB(n, m, cellWidth, cellHeight, height, width);
             ShowingLightcore(lightCoreH, lightCoreW, cellWidth, cellHeight);
@@ -311,12 +316,12 @@ int main() {
             
             Showingpieces(pieceRed, playersCount, players, cellWidth, cellHeight);
             Showingpieces(pieceBlue, huntersCount, hunters, cellWidth, cellHeight);
-            ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight);
-
+            ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight, wallTurn);
+            
             EndMode2D();
             Win(height, width, lightCoreH, lightCoreW, players, playersCount, f, &fontsize, maxsize, speed, &GameStoppage);
             Lose(height, width, m, players, playersCount, hunters, isHunter, &fontsize, maxsize, speed, f, &GameStoppage, lightCoreH, lightCoreW);
-        
+            
 
         EndDrawing();
     }
