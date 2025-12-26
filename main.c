@@ -23,7 +23,7 @@ int main() {
     int WallCount;
     int lightCoreH;
     int lightCoreW;
-    int showError;
+    int showError = 0;
     float maxsize;
 
     printf("\n\033[32mWelcome to our game!\nthe minimum and maximum number of rows or columns is 5 and 12\nEnter the board dimensions : \033[0m");
@@ -175,6 +175,7 @@ int main() {
     int player = -1;
     int sw = 0;
     int counter = 0;
+    int alivePlayers = playersCount;
     int playerMoved[playersCount];
     for(int i=0; i<playersCount; i++)playerMoved[i] = 0;
     
@@ -187,7 +188,7 @@ int main() {
         
         for (int i = 0; i < huntersCount; i++)
         {
-            for (int j = 0; j < playersCount; j++)
+            for (int j = 0; j < alivePlayers; j++)
             {
                 PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
             }
@@ -204,35 +205,11 @@ int main() {
         
         if(GameStoppage == 0){
             
-            if (IsKeyDown(KEY_T))
-            {
-                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                    Vector2 mousePos = GetMousePosition();
-                if (TempWallcounter > -1000){ 
-                    if(ShowingTempWalls (n, m, walls, &WallCount, WallsState, &TempWallcounter, isWall, mousePos, BlaWalls, wallTurn) == 1){
-                        updateHunters(n, m, hunters, huntersCount, players, playersCount, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
-                        
-
-                    }
-
-                }
-            }
-                
-
-                Vector2 mousePos = GetMousePosition();
-
-                showTempWall(mousePos,n,m,cellWidth,cellHeight,isWall, BlaWalls);
-            }
-            
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                // Vector2 mousePos = GetMousePosition();
-                // if (TempWallcounter > 0) ShowingTempWalls (n, m, walls, &WallCount, WallsState, &TempWallcounter, isWall, mousePos, BlaWalls);
-                
                 int x = GetMouseX();
                 int y = GetMouseY();
                 int cellX = (x)/cellWidth;
                 int cellY = (y)/cellHeight;
-                //printf("cell = (%d, %d)\n", cellX, cellY);
                 for(int i=0; i<playersCount; i++){
                     if(players[i][1] == cellX && players[i][0] == cellY && playerMoved[i] == 0){
                         player = i;
@@ -242,53 +219,70 @@ int main() {
                 }
 
                 if(sw == 0) player = -1;
-                //else {printf("%d\n", playerMoved[player]); printf("%d\n", player);}
                 sw = 0;
-                
             }
-            
-            if (IsKeyPressed(KEY_W))
+            if (IsKeyDown(KEY_T))
             {
-                movePieces(n, m, players, player, walls, WallsState, WallCount,'W' , &showError, isWall);
-                if(player != -1){playerMoved[player] = 1;}
-            }
-            else if (IsKeyPressed(KEY_A))
-            {
-                movePieces(n, m, players, player, walls, WallsState, WallCount, 'A', &showError, isWall);
-                if(player != -1){playerMoved[player] = 1;}
-            }
-            else if (IsKeyPressed(KEY_S))
-            {
-                movePieces(n, m, players, player, walls, WallsState ,  WallCount, 'S' , &showError, isWall);
-                if(player != -1){playerMoved[player] = 1;}
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    Vector2 mousePos = GetMousePosition();
+                    if (TempWallcounter > -1000 && player != -1 && playerMoved[player] == 0){ 
+                        //printf("m\n");
+                        if(ShowingTempWalls (n, m, walls, &WallCount, WallsState, &TempWallcounter, isWall, mousePos, BlaWalls, wallTurn) == 1){
+                            //printf("p\n");
+                            //isTempWall = 1;
+                            playerMoved[player] = 1;
+                            //player = -1;
+                        }
+                    }
+                }
+                Vector2 mousePos = GetMousePosition();
 
+                showTempWall(mousePos,n,m,cellWidth,cellHeight,isWall, BlaWalls);
             }
-            else if (IsKeyPressed(KEY_D))
-            {
-                movePieces(n, m, players, player, walls, WallsState,  WallCount, 'D', &showError, isWall);
-                if(player != -1){playerMoved[player] = 1;}
-            }
-            else if(IsKeyPressed(KEY_SPACE)){
-                if(player != -1){playerMoved[player] = 1;}
+            if(playerMoved[player] == 0){
+                if (IsKeyPressed(KEY_W))
+                {
+                    movePieces(n, m, players, player, walls, WallsState, WallCount,'W' , &showError, isWall);
+                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
+                }
+                else if (IsKeyPressed(KEY_A))
+                {
+                    movePieces(n, m, players, player, walls, WallsState, WallCount, 'A', &showError, isWall);
+                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
+                }
+                else if (IsKeyPressed(KEY_S))
+                {
+                    movePieces(n, m, players, player, walls, WallsState ,  WallCount, 'S' , &showError, isWall);
+                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
+
+                }
+                else if (IsKeyPressed(KEY_D))
+                {
+                    movePieces(n, m, players, player, walls, WallsState,  WallCount, 'D', &showError, isWall);
+                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
+                }
+                else if(IsKeyPressed(KEY_SPACE)){
+                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
+                }
             }
             if(player != -1 && playerMoved[player] == 1){
                 counter++;
                 player = -1;
             }
-            if(counter == playersCount){
+            if(counter == alivePlayers){
                 if(timer == -1){
                     timer = 0;
                 }
-                //printf("%d\n", counter);
                 counter = 0;
-                for(int i=0; i<playersCount; i++)playerMoved[i] = 0;
+                for(int i=0; i<alivePlayers; i++)playerMoved[i] = 0;
             }
             if(timer != -1)timer += GetFrameTime();
             if(timer >= 0.4){
-                updateHunters(n, m, hunters, huntersCount, players, playersCount, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
+                updateHunters(n, m, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
                 for (int i = WallCount - 1; wallTurn[i] > 0; i--)
                 {
                     wallTurn[i]--;
+                    if(wallTurn[i] == 0)isWall[walls[i][0]][walls[i][1]][WallsState[i]] = 0; 
                 }
                 
                 timer = -1;
@@ -314,13 +308,13 @@ int main() {
             
             
             
-            Showingpieces(pieceRed, playersCount, players, cellWidth, cellHeight);
+            Showingpieces(pieceRed, alivePlayers, players, cellWidth, cellHeight);
             Showingpieces(pieceBlue, huntersCount, hunters, cellWidth, cellHeight);
             ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight, wallTurn);
             
             EndMode2D();
             Win(height, width, lightCoreH, lightCoreW, players, playersCount, f, &fontsize, maxsize, speed, &GameStoppage);
-            Lose(height, width, m, players, playersCount, hunters, isHunter, &fontsize, maxsize, speed, f, &GameStoppage, lightCoreH, lightCoreW);
+            Lose(height, width, m, players, &alivePlayers, hunters, isHunter, &fontsize, maxsize, speed, f, &GameStoppage, lightCoreH, lightCoreW);
             
 
         EndDrawing();

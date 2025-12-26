@@ -45,11 +45,12 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
 
 }
 
-int searchNearestPlayer(int hunter ,int playerCount , int huntersCount ,int PlHuDistance[huntersCount][playerCount]  ){
+int searchNearestPlayer(int hunter ,int alivePlayers , int huntersCount ,int PlHuDistance[huntersCount][alivePlayers], int ignore[]){
     int min = 30;
-    int ans;
-    for (int i = 0; i < playerCount; i++)
+    int ans = -1;
+    for (int i = 0; i < alivePlayers; i++)
     {
+        if(ignore[i] == 1)continue;
         if (PlHuDistance[hunter][i] < min){
             min = PlHuDistance[hunter][i];
             ans = i;
@@ -62,11 +63,17 @@ int searchNearestPlayer(int hunter ,int playerCount , int huntersCount ,int PlHu
 
 }
 
-void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int players[][2],int playerCount, int PlHuDistance[huntersCount][playerCount] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols]){
-    
+void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int players[][2],int alivePlayers, int PlHuDistance[][alivePlayers] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols]){
+    int moved = 0;
+    int ignore[alivePlayers];
+    for(int j = 0; j < alivePlayers; j++)ignore[j] = 0;
     for (int i = 0; i < huntersCount; i++)
     {
-        int player = searchNearestPlayer(i, playerCount, huntersCount, PlHuDistance);
+        int player = searchNearestPlayer(i, alivePlayers, huntersCount, PlHuDistance, ignore);
+        if(player == -1){ // means no player that hunter gets nearer to it
+            for(int j = 0; j < alivePlayers; j++)ignore[j] = 0; // modify ignore[] for next hunter
+            continue;
+        }
         int px = players[player][0];
         int py = players[player][1];
 
@@ -77,29 +84,34 @@ void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int pl
             isHunter[shx][shy] = 0;
             isHunter[shx][shy - 2] = 1;
             hunters[i][1] -= 2;
+            moved = 1;
         }
         else if (shy - py < -1 && isWall[shx][shy][1] == 0 && isWall[shx][shy + 1][1] == 0 && isHunter[shx][shy + 2] == 0)
         {
             isHunter[shx][shy] = 0;
             isHunter[shx][shy + 2] = 1;
             hunters[i][1] += 2;
+            moved = 1;
         }
         else if (shy - py > 0 && isWall[shx][shy - 1][1] == 0 && isHunter[shx][shy - 1] == 0)
         {
             isHunter[shx][shy] = 0;
             isHunter[shx][shy - 1] = 1;
             hunters[i][1] -= 1;
+            moved = 1;
             if(shx - px > 0 && isWall[shx - 1][shy - 1][0] == 0 && isHunter[shx - 1][shy - 1] == 0)
             {
                 isHunter[shx][shy - 1] = 0;
                 isHunter[shx - 1][shy - 1] = 1;
                 hunters[i][0] -= 1;
+                moved = 1;
             }
             else if(shx - px < 0 && isWall[shx][shy - 1][0] == 0 && isHunter[shx + 1][shy - 1] == 0)
             {
                 isHunter[shx][shy - 1] = 0;
                 isHunter[shx + 1][shy - 1] = 1;
                 hunters[i][0] += 1;
+                moved = 1;
             }
 
         }
@@ -108,17 +120,20 @@ void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int pl
             isHunter[shx][shy] = 0;
             isHunter[shx][shy + 1] = 1;
             hunters[i][1] += 1;
+            moved = 1;
             if(shx - px > 0 && isWall[shx - 1][shy + 1][0] == 0 && isHunter[shx - 1][shy + 1] == 0)
             {
                 isHunter[shx][shy + 1] = 0;
                 isHunter[shx - 1][shy + 1] = 1;
                 hunters[i][0] -= 1;
+                moved = 1;
             }
             else if(shx - px < 0 && isWall[shx][shy + 1][0] == 0 && isHunter[shx + 1][shy + 1] == 0)
             {
                 isHunter[shx][shy + 1] = 0;
                 isHunter[shx + 1][shy + 1] = 1;
                 hunters[i][0] += 1;
+                moved = 1;
             }
         }
         else {
@@ -127,33 +142,37 @@ void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int pl
                 isHunter[shx][shy] = 0;
                 isHunter[shx - 2][shy] = 1;
                 hunters[i][0] -= 2;
+                moved = 1;
             }
             else if (shx - px < -1 && isWall[shx][shy][0] == 0 && isWall[shx + 1][shy][0] == 0 && isHunter[shx + 2][shy] == 0)
             {
                 isHunter[shx][shy] = 0;
                 isHunter[shx + 2][shy] = 1;
                 hunters[i][0] += 2;
-            
+                moved = 1;
             }
             else if (shx - px > 0 && isWall[shx - 1][shy][0] == 0 && isHunter[shx - 1][shy] == 0)
             {
                 isHunter[shx][shy] = 0;
                 isHunter[shx - 1][shy] = 1;
                 hunters[i][0] -= 1;
+                moved = 1;
             }
             else if (shx - px < 0 && isWall[shx][shy][0] == 0 && isHunter[shx + 1][shy] == 0)
             {
                 isHunter[shx][shy] = 0;
                 isHunter[shx + 1][shy] = 1;
                 hunters[i][0] += 1;
-            
+                moved = 1;
             } 
         }
-        
-        
-        
-        
-        
+        if(moved == 0){
+            ignore[player] = 1;
+            i--; // update this hunter again
+        }else{
+            for(int j = 0; j < alivePlayers; j++)ignore[j] = 0; // modify ignore[] for next hunter
+            moved = 0;
+        }
     }
     
 }
@@ -182,27 +201,36 @@ void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2],
     }
 }
 
-void Lose(int height, int width, int cols,int players[][2], int playerCount , int hunters[][2], int isHunter[][cols], float *fontsize,float maxsize, float speed , Font f, int *GameStoppage, int LightcoreH, int LightcoreW){
-    for (int i = 0; i < playerCount; i++)
+void Lose(int height, int width, int cols,int players[][2], int *alivePlayers, int hunters[][2], int isHunter[][cols], float *fontsize,float maxsize, float speed , Font f, int *GameStoppage, int LightcoreH, int LightcoreW){
+    for (int i = 0; i < *alivePlayers; i++)
     {
         int px = players[i][0];
         int py = players[i][1];
         if (isHunter[px][py] == 1 && (px!=LightcoreH || py!=LightcoreW))
         {
-            if (*fontsize < maxsize)
-            {
-                *fontsize += speed * GetFrameTime();
-            }
+            if(*alivePlayers == 1){
+                if (*fontsize < maxsize)
+                {
+                    *fontsize += speed * GetFrameTime();
+                }
 
-            char str[15] = "You Lost!";
-            Color color = {255,0,0,255};
+                char str[15] = "You Lost!";
+                Color color = {255,0,0,255};
             
             
-            Vector2 textSize = MeasureTextEx(f, str, *fontsize, 2);
-            Vector2 pos = {width/2 , height/2};
-            Vector2 origin = {textSize.x / 2, textSize.y/2};
-            DrawTextPro(f, str, pos, origin, 0.0f, *fontsize, 2, color);
-            *GameStoppage=1;
+                Vector2 textSize = MeasureTextEx(f, str, *fontsize, 2);
+                Vector2 pos = {width/2 , height/2};
+                Vector2 origin = {textSize.x / 2, textSize.y/2};
+                DrawTextPro(f, str, pos, origin, 0.0f, *fontsize, 2, color);
+                *GameStoppage=1;
+            }
+            else{
+                for(int j=i+1; j<*alivePlayers; j++){
+                    players[j-1][0] = players[j][0];
+                    players[j-1][1] = players[j][1];
+                }
+                (*alivePlayers) -= 1;
+            }
         }
         
     }
