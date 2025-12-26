@@ -4,12 +4,17 @@
 
 
 
-
-void movePieces(int rows, int cols, int players[][2],int player, int walls[][2], char wallsstates[] ,int wallcount, char move, int *showerror, int isWall[][cols][2]){
+int isPlayer(int players[][2], int alivePlayers, int x, int y){
+    for(int i=0; i<alivePlayers; i++){
+        if(players[i][0] == x && players[i][1] == y)return 1;
+    }
+    return 0;
+}
+void movePieces(int rows, int cols, int players[][2],int player, int walls[][2], char wallsstates[] ,int wallcount, char move, int *showerror, int isWall[][cols][2], int alivePlayers){
     if(player == -1)return;
     int px = players[player][0];
     int py = players[player][1];
-    if (move == 'W' && (px <= 0 || isWall[px - 1][py][0] == 1))
+    if (move == 'W' && (px <= 0 || isWall[px - 1][py][0] == 1 || isPlayer(players, alivePlayers, px - 1, py)))
     {
         *showerror = 1;
     }
@@ -17,7 +22,7 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
     {
         players[player][0] -= 1;
     }
-    if (move == 'A' && (py <= 0 || isWall[px][py - 1][1] == 1))
+    if (move == 'A' && (py <= 0 || isWall[px][py - 1][1] == 1 || isPlayer(players, alivePlayers, px, py - 1)))
     {
         *showerror = 1;
     }
@@ -25,7 +30,7 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
     {
         players[player][1] -= 1;
     }
-    if (move == 'S' && (px >= ( rows - 1) || isWall[px][py][0] == 1) )
+    if (move == 'S' && (px >= ( rows - 1) || isWall[px][py][0] == 1 || isPlayer(players, alivePlayers, px + 1, py)))
     {
         *showerror = 1;
     }
@@ -33,7 +38,7 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
     {
         players[player][0] += 1;
     }
-    if (move == 'D' && (py >= (cols - 1) ||  isWall[px][py][1] == 1))
+    if (move == 'D' && (py >= (cols - 1) ||  isWall[px][py][1] == 1 || isPlayer(players, alivePlayers, px, py + 1)))
     {
         *showerror = 1;
     }

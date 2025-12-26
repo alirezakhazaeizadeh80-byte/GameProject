@@ -170,8 +170,6 @@ int main() {
     float speed = 50.0f;
     int GameStoppage = 0;
     float timer = -1;
-    int pressed = 0;
-    int error;
     int player = -1;
     int sw = 0;
     int counter = 0;
@@ -223,9 +221,9 @@ int main() {
             }
             if (IsKeyDown(KEY_T))
             {
-                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
                     Vector2 mousePos = GetMousePosition();
-                    if (TempWallcounter > -1000 && player != -1 && playerMoved[player] == 0){ 
+                    if (TempWallcounter > 0 && player != -1 && playerMoved[player] == 0){ 
                         //printf("m\n");
                         if(ShowingTempWalls (n, m, walls, &WallCount, WallsState, &TempWallcounter, isWall, mousePos, BlaWalls, wallTurn) == 1){
                             //printf("p\n");
@@ -242,23 +240,23 @@ int main() {
             if(playerMoved[player] == 0){
                 if (IsKeyPressed(KEY_W))
                 {
-                    movePieces(n, m, players, player, walls, WallsState, WallCount,'W' , &showError, isWall);
+                    movePieces(n, m, players, player, walls, WallsState, WallCount,'W' , &showError, isWall, alivePlayers);
                     if(player != -1 && showError == 0){playerMoved[player] = 1;}
                 }
                 else if (IsKeyPressed(KEY_A))
                 {
-                    movePieces(n, m, players, player, walls, WallsState, WallCount, 'A', &showError, isWall);
+                    movePieces(n, m, players, player, walls, WallsState, WallCount, 'A', &showError, isWall, alivePlayers);
                     if(player != -1 && showError == 0){playerMoved[player] = 1;}
                 }
                 else if (IsKeyPressed(KEY_S))
                 {
-                    movePieces(n, m, players, player, walls, WallsState ,  WallCount, 'S' , &showError, isWall);
+                    movePieces(n, m, players, player, walls, WallsState ,  WallCount, 'S' , &showError, isWall, alivePlayers);
                     if(player != -1 && showError == 0){playerMoved[player] = 1;}
 
                 }
                 else if (IsKeyPressed(KEY_D))
                 {
-                    movePieces(n, m, players, player, walls, WallsState,  WallCount, 'D', &showError, isWall);
+                    movePieces(n, m, players, player, walls, WallsState,  WallCount, 'D', &showError, isWall, alivePlayers);
                     if(player != -1 && showError == 0){playerMoved[player] = 1;}
                 }
                 else if(IsKeyPressed(KEY_SPACE)){
@@ -282,7 +280,10 @@ int main() {
                 for (int i = WallCount - 1; wallTurn[i] > 0; i--)
                 {
                     wallTurn[i]--;
-                    if(wallTurn[i] == 0)isWall[walls[i][0]][walls[i][1]][WallsState[i]] = 0; 
+                    int state;
+                    if(WallsState[i] == 'H') state = 0;
+                    else if(WallsState[i] == 'V') state = 1;
+                    if(wallTurn[i] == 0)isWall[walls[i][0]][walls[i][1]][state] = 0; 
                 }
                 
                 timer = -1;
@@ -315,7 +316,6 @@ int main() {
             EndMode2D();
             Win(height, width, lightCoreH, lightCoreW, players, playersCount, f, &fontsize, maxsize, speed, &GameStoppage);
             Lose(height, width, m, players, &alivePlayers, hunters, isHunter, &fontsize, maxsize, speed, f, &GameStoppage, lightCoreH, lightCoreW);
-            
 
         EndDrawing();
     }
