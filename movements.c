@@ -50,7 +50,7 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
 
 }
 
-int searchNearestPlayer(int hunter ,int alivePlayers , int huntersCount ,int PlHuDistance[huntersCount][alivePlayers]){
+int searchNearestPlayer(int hunter ,int playercount ,int alivePlayers , int huntersCount ,int PlHuDistance[huntersCount][playercount]){
     int min = 30;
     int ans;
     for (int i = 0; i < alivePlayers; i++)
@@ -58,29 +58,24 @@ int searchNearestPlayer(int hunter ,int alivePlayers , int huntersCount ,int PlH
         if (PlHuDistance[hunter][i] < min){
             min = PlHuDistance[hunter][i];
             ans = i;
-        
         }
     }
     return ans;
-
-    
-
 }
 
-void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int players[][2],int alivePlayers, int PlHuDistance[][alivePlayers] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols]){
+void updateHunters(int row, int cols, int playercount, int hunters[][2], int huntersCount, int players[][2],int alivePlayers, int PlHuDistance[][playercount] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols]){
     int moved = 0;
     // int ignore[alivePlayers];
     // for(int j = 0; j < alivePlayers; j++)ignore[j] = 0;
     for (int i = 0; i < huntersCount; i++)
     {
-        int player = searchNearestPlayer(i, alivePlayers, huntersCount, PlHuDistance);
+        int player = searchNearestPlayer(i, playercount, alivePlayers, huntersCount, PlHuDistance);
         // if(player == -1){ // means no player that hunter gets nearer to it
         //     for(int j = 0; j < alivePlayers; j++)ignore[j] = 0; // modify ignore[] for next hunter
         //     continue;
         // }
         int px = players[player][0];
         int py = players[player][1];
-
         int shx = hunters[i][0];
         int shy = hunters[i][1]; 
         if (shy - py > 1 && isWall[shx][shy - 1][1] == 0 && isWall[shx][shy - 2][1] == 0 && isHunter[shx][shy - 2] == 0)
@@ -219,9 +214,9 @@ void Lose(int height, int width, int cols,int players[][2], int *alivePlayers, i
                 }
 
                 char str[15] = "You Lost!";
+
+
                 Color color = {255,0,0,255};
-            
-            
                 Vector2 textSize = MeasureTextEx(f, str, *fontsize, 2);
                 Vector2 pos = {width/2 , height/2};
                 Vector2 origin = {textSize.x / 2, textSize.y/2};

@@ -57,7 +57,7 @@ int main() {
     }
     printf("\033[32mEnter the number of players : \033[0m");
     scanf("%d", &playersCount);
-    while(playersCount > 4 ){
+    while(playersCount > 8 ){
         printf("\033[31mThe input is invlalid!\033[0m");
         printf("\033[32m\nEnter the number of players : \033[0m");
         scanf("%d", &playersCount);
@@ -182,8 +182,6 @@ int main() {
     Rectangle BlaWalls[n][m][2];
     while (!WindowShouldClose())
     {
-        
-        
         for (int i = 0; i < huntersCount; i++)
         {
             for (int j = 0; j < alivePlayers; j++)
@@ -191,10 +189,8 @@ int main() {
                 PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
             }
         }
-        
-        
-        
-        
+
+       
         ClearBackground(Background);
         
         BeginDrawing();
@@ -281,12 +277,19 @@ int main() {
                 {
                     wallTurn[i]--;
                     int state;
-                    if(WallsState[i] == 'H') state = 0;
-                    else if(WallsState[i] == 'V') state = 1;
-                    if(wallTurn[i] == 0)isWall[walls[i][0]][walls[i][1]][state] = 0; 
+                    if (WallsState[i] == 'H') state = 0;
+                    else if (WallsState[i] == 'V') state = 1;
+                    if(wallTurn[i] == 0)isWall[walls[i][0]][walls[i][1]][state] = 0;
                 }
-                updateHunters(n, m, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
-                
+                for (int i = 0; i < huntersCount; i++)
+                {
+                    for (int j = 0; j < alivePlayers; j++)
+                    {
+                        PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
+                    }
+                }
+                updateHunters(n, m, playersCount, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
+
                 timer = -1;
             }
             if (showError == 1) {
