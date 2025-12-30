@@ -276,7 +276,7 @@ int main() {
             }
             if(timer != -1)timer += GetFrameTime();
             if(timer >= 0.4){
-                updateHunters(n, m, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
+               
                 for (int i = WallCount - 1; wallTurn[i] > 0; i--)
                 {
                     wallTurn[i]--;
@@ -285,6 +285,7 @@ int main() {
                     else if(WallsState[i] == 'V') state = 1;
                     if(wallTurn[i] == 0)isWall[walls[i][0]][walls[i][1]][state] = 0; 
                 }
+                updateHunters(n, m, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
                 
                 timer = -1;
             }

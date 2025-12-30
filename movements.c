@@ -50,12 +50,11 @@ void movePieces(int rows, int cols, int players[][2],int player, int walls[][2],
 
 }
 
-int searchNearestPlayer(int hunter ,int alivePlayers , int huntersCount ,int PlHuDistance[huntersCount][alivePlayers], int ignore[]){
+int searchNearestPlayer(int hunter ,int alivePlayers , int huntersCount ,int PlHuDistance[huntersCount][alivePlayers]){
     int min = 30;
-    int ans = -1;
+    int ans;
     for (int i = 0; i < alivePlayers; i++)
     {
-        if(ignore[i] == 1)continue;
         if (PlHuDistance[hunter][i] < min){
             min = PlHuDistance[hunter][i];
             ans = i;
@@ -70,15 +69,15 @@ int searchNearestPlayer(int hunter ,int alivePlayers , int huntersCount ,int PlH
 
 void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int players[][2],int alivePlayers, int PlHuDistance[][alivePlayers] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols]){
     int moved = 0;
-    int ignore[alivePlayers];
-    for(int j = 0; j < alivePlayers; j++)ignore[j] = 0;
+    // int ignore[alivePlayers];
+    // for(int j = 0; j < alivePlayers; j++)ignore[j] = 0;
     for (int i = 0; i < huntersCount; i++)
     {
-        int player = searchNearestPlayer(i, alivePlayers, huntersCount, PlHuDistance, ignore);
-        if(player == -1){ // means no player that hunter gets nearer to it
-            for(int j = 0; j < alivePlayers; j++)ignore[j] = 0; // modify ignore[] for next hunter
-            continue;
-        }
+        int player = searchNearestPlayer(i, alivePlayers, huntersCount, PlHuDistance);
+        // if(player == -1){ // means no player that hunter gets nearer to it
+        //     for(int j = 0; j < alivePlayers; j++)ignore[j] = 0; // modify ignore[] for next hunter
+        //     continue;
+        // }
         int px = players[player][0];
         int py = players[player][1];
 
@@ -171,13 +170,13 @@ void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int pl
                 moved = 1;
             } 
         }
-        if(moved == 0){
-            ignore[player] = 1;
-            i--; // update this hunter again
-        }else{
-            for(int j = 0; j < alivePlayers; j++)ignore[j] = 0; // modify ignore[] for next hunter
-            moved = 0;
-        }
+        // if(moved == 0){
+        //     ignore[player] = 1;
+        //     i--; // update this hunter again
+        // }else{
+        //     for(int j = 0; j < alivePlayers; j++)ignore[j] = 0; // modify ignore[] for next hunter
+        //     moved = 0;
+        // }
     }
     
 }
