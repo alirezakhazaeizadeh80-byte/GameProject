@@ -234,8 +234,22 @@ void Lose(int height, int width, int cols,int players[][2], int *alivePlayers, i
         
     }
 }
-
-
+// void AnimatePlayers(char dir, float *currX, float *currY, int targetX, int targetY, int players[][2], int player){
+//     if(dir == 'R'){
+//         if(*currY < targetY)*currY += GetFrameTime() / 3;
+//     }
+//     if(dir == 'L'){
+//         if(*currY > targetY)*currY -= GetFrameTime() / 3;
+//     }
+//     if(dir == 'D'){
+//         if(*currX < targetY)*currX += GetFrameTime() / 3;
+//     }
+//     if(dir == 'U'){
+//         if(*currY > targetY)*currX -= GetFrameTime() / 3;
+//     }
+//     players[player][0] = *currX;
+//     players[player][1] = *currY;
+// }
 
 
 

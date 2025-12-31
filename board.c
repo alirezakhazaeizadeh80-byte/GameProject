@@ -28,15 +28,39 @@ void ShowingLightcore(int rows, int cols, int cellWidth, int cellHeight){
     DrawRectangle((cellWidth * (cols)) + 20, (cellHeight * (rows)) +20, cellWidth, cellHeight, lightcore);
 }
 
-void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth, int cellHeight){
-    int x, y, pX, pY; float scale;
+void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth, int cellHeight, int playerMoved[], int state, float timer, float *transparency, char *s, int selected){
+    int x, y, pX, pY; float scale, radius, centerX, centerY;
+    if(*transparency >= 1.0)*s = 'D'; // Decrease transparency
+    if(*transparency <= 0.3)*s = 'I'; // Increase transparency
+    if(*s == 'I')*transparency += GetFrameTime()/3;
+    else *transparency -= GetFrameTime()/3;
     for(int i = 0; i < piecesNo; i++){
         x = pieces[i][1] * cellWidth + 20;
         y = pieces[i][0] * cellHeight + 20;
+        if(selected == i && state == 0){
+            scale = 1.25 * (float)cellWidth / piece.width;
+            pX = x + (cellWidth - scale * piece.width) / 2; // top corner
+            pY = y + (cellHeight - scale * piece.height) / 2; // left corner
+            DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
+            continue;
+        }
         scale = 1.1 * (float)cellWidth / piece.width;
-        pX = x + (cellWidth - scale * piece.width) / 2;
-        pY = y + (cellHeight - scale * piece.height) / 2;
-        DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
+        pX = x + (cellWidth - scale * piece.width) / 2; // top corner
+        pY = y + (cellHeight - scale * piece.height) / 2; // left corner
+        if(selected == i && state == 0){
+            DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
+            continue;
+        }
+        if(state == 0 && playerMoved[i] == 0){
+            // radius = (scale * piece.height) / 2 * 0.65;
+            // centerX = pX + (scale * piece.width) / 2;
+            // centerY = pY + (scale * piece.height) / 2;
+            if(timer != -1){
+                if(timer>=0.6)DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, Fade(WHITE, *transparency));
+                else DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
+            }
+            else DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, Fade(WHITE, *transparency));
+        }else DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
     }
 }
 

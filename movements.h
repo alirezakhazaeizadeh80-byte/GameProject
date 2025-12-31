@@ -10,6 +10,6 @@ void updateHunters(int row, int cols, int playercount, int hunters[][2], int hun
 void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2], int playerCount, Font f, float *fontsize, float maxsize, float speed, int *GameStoppage);
 int searchNearestPlayer(int hunter, int playercount ,int alivePlayers , int huntersCount ,int PlHuDistance[huntersCount][playercount]);
 void Lose(int height, int width, int cols,int players[][2], int *alivePlayers, int hunters[][2], int isHunter[][cols], float *fontsize,float maxsize, float speed , Font f, int *GameStoppage, int LightcoreH, int LightcoreW);
-
+// void AnimatePlayers(char dir, float *currX, float *currY, int targetX, int targetY, int players[][2], int player);
 
 #endif

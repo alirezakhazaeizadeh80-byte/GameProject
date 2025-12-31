@@ -28,7 +28,7 @@ int main() {
 
     printf("\n\033[32mWelcome to our game!\nthe minimum and maximum number of rows or columns is 5 and 12\nEnter the board dimensions : \033[0m");
     scanf("%d %d", &n, &m);
-    while (n < 5 || n > 12 || m < 5 || m > 12)
+    while (n < 5 || n > 15 || m < 5 || m > 15)
     {
         printf("\033[31mThe input is invlalid!\033[0m\n");
         printf("\033[32mEnter the board dimensions : \033[0m");
@@ -37,9 +37,9 @@ int main() {
     
     if (abs(n - m) < 4 )
     {
-        width = 800.0;
-        height= 800.0;
-        maxsize = 150.0f;
+        width = 700.0;
+        height= 700.0;
+        maxsize = 120.0f;
         
     }
     else if (n - m >= 4)
@@ -169,6 +169,9 @@ int main() {
     float fontsize = 10.0f;
     float speed = 50.0f;
     int GameStoppage = 0;
+    float transparency = 0.0;
+    int selected = -1;
+    char s = 'I';
     float timer = -1;
     int player = -1;
     int sw = 0;
@@ -236,18 +239,15 @@ int main() {
             if(playerMoved[player] == 0){
                 if (IsKeyPressed(KEY_W))
                 {
-                    movePieces(n, m, players, player, walls, WallsState, WallCount,'W' , &showError, isWall, alivePlayers);
-                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
+                    movePieces(n, m, players, player, walls, WallsState, WallCount,'W' , &showError, isWall, alivePlayers);                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
                 }
                 else if (IsKeyPressed(KEY_A))
                 {
-                    movePieces(n, m, players, player, walls, WallsState, WallCount, 'A', &showError, isWall, alivePlayers);
-                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
+                    movePieces(n, m, players, player, walls, WallsState, WallCount, 'A', &showError, isWall, alivePlayers);                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
                 }
                 else if (IsKeyPressed(KEY_S))
                 {
-                    movePieces(n, m, players, player, walls, WallsState ,  WallCount, 'S' , &showError, isWall, alivePlayers);
-                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
+                    movePieces(n, m, players, player, walls, WallsState ,  WallCount, 'S' , &showError, isWall, alivePlayers);                    if(player != -1 && showError == 0){playerMoved[player] = 1;}
 
                 }
                 else if (IsKeyPressed(KEY_D))
@@ -313,8 +313,8 @@ int main() {
             
             
             
-            Showingpieces(pieceRed, alivePlayers, players, cellWidth, cellHeight);
-            Showingpieces(pieceBlue, huntersCount, hunters, cellWidth, cellHeight);
+            Showingpieces(pieceRed, alivePlayers, players, cellWidth, cellHeight, playerMoved, 0, timer, &transparency, &s, player);
+            Showingpieces(pieceBlue, huntersCount, hunters, cellWidth, cellHeight, playerMoved, 1, timer, &transparency, &s, player);
             ShowingWalls(WallCount ,walls, WallsState, cellWidth, cellHeight, wallTurn);
             
             EndMode2D();
