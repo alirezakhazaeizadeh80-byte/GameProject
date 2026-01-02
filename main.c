@@ -10,6 +10,7 @@
 # include <time.h>
 # include <stdbool.h>
 # include <string.h>
+# include "pathfinding.h"
 
 
 
@@ -37,8 +38,8 @@ int main() {
     
     if (abs(n - m) < 4 )
     {
-        width = 700.0;
-        height= 700.0;
+        width = 800.0;
+        height= 800.0;
         maxsize = 120.0f;
         
     }
@@ -113,7 +114,7 @@ int main() {
         players[i][0] = X;
         players[i][1] = Y;
     }
-
+    
     int isHunter[n][m];
     for(int i=0; i<n; i++){
         for(int j=0; j<m; j++){
@@ -185,6 +186,8 @@ int main() {
     Rectangle BlaWalls[n][m][2];
     while (!WindowShouldClose())
     {
+        Pair path[150];
+        int pathcount = 0;
         for (int i = 0; i < huntersCount; i++)
         {
             for (int j = 0; j < alivePlayers; j++)
@@ -288,7 +291,7 @@ int main() {
                         PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
                     }
                 }
-                updateHunters(n, m, playersCount, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter);
+                updateHunters(n, m, playersCount, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter, path, &pathcount);
 
                 timer = -1;
             }
