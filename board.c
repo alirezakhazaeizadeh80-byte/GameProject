@@ -28,7 +28,7 @@ void ShowingLightcore(int rows, int cols, int cellWidth, int cellHeight){
     DrawRectangle((cellWidth * (cols)) + 20, (cellHeight * (rows)) +20, cellWidth, cellHeight, lightcore);
 }
 
-void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth, int cellHeight, int playerMoved[], int state, float timer, float *transparency, char *s, int selected){
+void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth, int cellHeight, int playerMoved[], int state, float timer, float *transparency, char *s, int selected, int *PickedHunter){
     int x, y, pX, pY; float scale, radius, centerX, centerY;
     if(*transparency >= 1.0)*s = 'D'; // Decrease transparency
     if(*transparency <= 0.3)*s = 'I'; // Increase transparency
@@ -60,10 +60,31 @@ void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth
                 else DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
             }
             else DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, Fade(WHITE, *transparency));
-        }else DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
+        }else{
+            if(state == 0){
+                scale = 1.1 * (float)cellWidth / piece.width;
+            }
+            if(state == 1 && *PickedHunter == i){
+                scale = 1.25 * (float)cellWidth / piece.width;
+                //*PickedHunter = -1;
+            }
+            pX = x + (cellWidth - scale * piece.width) / 2;
+            pY = y + (cellHeight - scale * piece.height) / 2;
+            DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
+        }
     }
 }
-
+void ShowingBonusBox(Texture2D box, int bonusCount, int bonuses[][2], int cellWidth, int cellHeight){
+    int x, y, pX, pY; float scale;
+    for(int i = 0; i < bonusCount; i++){
+        x = bonuses[i][1] * cellWidth + 20;
+        y = bonuses[i][0] * cellHeight + 20;
+        scale = 1.05 * (float)cellWidth / box.width;
+        pX = x + (cellWidth - scale * box.width)/2;
+        pY = y + (cellHeight - scale * box.height)/2;
+        DrawTextureEx(box, (Vector2){pX, pY}, 0, scale, WHITE);
+    }
+}
 
 
 void tempWalls(int rows, int cols, int cellWidth, int cellHeight, Rectangle BlaWalls[rows][cols][2]){
@@ -84,7 +105,7 @@ void tempWalls(int rows, int cols, int cellWidth, int cellHeight, Rectangle BlaW
         }
     }
 }
-int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wallsState[], int* tempWallCounter, int isWall[rows][cols][2], Vector2 mousePos, Rectangle BlaWalls[rows][cols][2], int wallTurn[]){
+int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wallsState[], int* tempWallCounter, int isWall[rows][cols][2], Vector2 mousePos, Rectangle BlaWalls[rows][cols][2], int wallTurn[], int state, int BonusWalls[], int player){
     
     for (int i = 0; i < rows; i++)
     {
@@ -94,10 +115,12 @@ int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wa
                 walls[*wallCount][1] = j-1;
                 wallsState[*wallCount] = 'V';
                 isWall[i][j-1][1] = 1;
-                walls[*wallCount][2] = 2;
                 wallTurn[*wallCount] = 2;
                 *wallCount += 1;
-                *tempWallCounter -= 1;
+                if(state == 0)*tempWallCounter -= 1;
+                else{
+                    BonusWalls[player] -= 1; if(BonusWalls[player] == 0)BonusWalls[player] = -1;
+                }
                 return 1;
                 
                 
@@ -107,10 +130,12 @@ int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wa
                 walls[*wallCount][1] = j;
                 wallsState[*wallCount] = 'H';
                 isWall[i-1][j][0] = 1;
-                walls[*wallCount][2] = 2;
                 wallTurn[*wallCount] = 2;
                 *wallCount += 1;
-                *tempWallCounter -= 1;
+                if(state == 0)*tempWallCounter -= 1;
+                else{
+                    BonusWalls[player] -= 1; if(BonusWalls[player] == 0)BonusWalls[player] = -1;
+                }
                 return 1;
             }
             
@@ -120,7 +145,7 @@ int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wa
         }
         
     }
-    
+    return 0;
     
 }
 
