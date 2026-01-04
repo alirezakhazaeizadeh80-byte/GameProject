@@ -80,25 +80,26 @@ void updateHunters(int row, int cols, int playercount, int hunters[][2], int hun
         int shx = hunters[i][0];
         int shy = hunters[i][1];
         aStar(row, cols, isWall, (Pair){shx,shy}, (Pair){px,py}, path, pathcount, isBonus);
-        isHunter[shx][shy] = 0;
-        int r = path[*pathcount-2].row;
-        int c = path[*pathcount-2].col;
+        printf("%d\n", *pathcount);
+        if(*pathcount != 0){
+            isHunter[shx][shy] = 0;
+            int r = path[*pathcount-2].row;
+            int c = path[*pathcount-2].col;
 
-        if(*pathcount >= 2 && isHunter[r][c] == 0){
-            printf("%d %d %d\n",2,r,c);
-            isHunter[r][c] = 1;
-            hunters[i][0] = r;
-            hunters[i][1] = c;
-        }
-
-        else{
-            r = path[*pathcount-1].row;
-            c = path[*pathcount-1].col;
-            printf("%d %d %d\n",1,r,c);
-            if(isHunter[r][c] == 0){
+            if(*pathcount >= 2 && isHunter[r][c] == 0){
                 isHunter[r][c] = 1;
                 hunters[i][0] = r;
                 hunters[i][1] = c;
+            }
+
+            else{
+                r = path[*pathcount-1].row;
+                c = path[*pathcount-1].col;            
+                if(isHunter[r][c] == 0){
+                    isHunter[r][c] = 1;
+                    hunters[i][0] = r;
+                    hunters[i][1] = c;
+                }
             }
         }
 

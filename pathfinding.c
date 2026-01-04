@@ -159,17 +159,9 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                 }
                 
                 
-                if(sw){   
-                    ismoved = 1;
-                    gNew = cells[i][j].g + 1;
-                    hNew = calculateH(i-1, j, dest);
-                    fNew = gNew + hNew;
-
-                    openlist[opencount].f = fNew;
-                    openlist[opencount].p.row = i-1;
-                    openlist[opencount].p.col = j;
-                    opencount++;
-                }
+                gNew = cells[i][j].g + 1;
+                hNew = calculateH(i-1, j, dest);
+                fNew = gNew + hNew;
 
                 if (cells[i-1][j].f == INT_MAX || cells[i-1][j].f > fNew)
                 {
@@ -178,7 +170,15 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                     cells[i-1][j].h = hNew;
                     cells[i-1][j].parent_i = i;
                     cells[i-1][j].parent_j = j;
+                    if(sw){   
+                        ismoved = 1;
+                        openlist[opencount].f = fNew;
+                        openlist[opencount].p.row = i-1;
+                        openlist[opencount].p.col = j;
+                        opencount++;}
                 }
+                
+
                 
 
             }
@@ -201,16 +201,9 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                     if(openlist[m].p.row == i+1 && openlist[m].p.col == j) sw = 0;
                 }
                 
-                if(sw){
-                    ismoved = 1;
-                    gNew = cells[i][j].g + 1;
-                    hNew = calculateH(i+1, j, dest);
-                    fNew = gNew + hNew;
-                    openlist[opencount].f = fNew;
-                    openlist[opencount].p.row = i+1;
-                    openlist[opencount].p.col = j;
-                    opencount++;
-                }
+                gNew = cells[i][j].g + 1;
+                hNew = calculateH(i+1, j, dest);
+                fNew = gNew + hNew;
                 if (cells[i+1][j].f == INT_MAX || cells[i+1][j].f > fNew)
                 {
                     cells[i+1][j].f = fNew;
@@ -218,6 +211,13 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                     cells[i+1][j].h = hNew;
                     cells[i+1][j].parent_i = i;
                     cells[i+1][j].parent_j = j;
+                    if(sw){
+                        ismoved = 1;
+                        openlist[opencount].f = fNew;
+                        openlist[opencount].p.row = i+1;
+                        openlist[opencount].p.col = j;
+                        opencount++;
+                    }
                 }
                 
 
@@ -241,16 +241,9 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                     if(openlist[m].p.row == i && openlist[m].p.col == j+1) sw = 0;
                 }
                 
-                if(sw){
-                    ismoved = 1;
-                    gNew = cells[i][j].g + 1;
-                    hNew = calculateH(i, j+1, dest);
-                    fNew = gNew + hNew;
-                    openlist[opencount].f = fNew;
-                    openlist[opencount].p.row = i;
-                    openlist[opencount].p.col = j+1;
-                    opencount++;
-                }
+                gNew = cells[i][j].g + 1;
+                hNew = calculateH(i, j+1, dest);
+                fNew = gNew + hNew;
                 if (cells[i][j+1].f == INT_MAX || cells[i][j+1].f > fNew)
                 {
                     cells[i][j+1].f = fNew;
@@ -258,6 +251,13 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                     cells[i][j+1].h = hNew;
                     cells[i][j+1].parent_i = i;
                     cells[i][j+1].parent_j = j;
+                    if(sw){
+                        ismoved = 1;
+                        openlist[opencount].f = fNew;
+                        openlist[opencount].p.row = i;
+                        openlist[opencount].p.col = j+1;
+                        opencount++;
+                    }
                 }
                 
 
@@ -280,16 +280,9 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                 {
                     if(openlist[m].p.row == i && openlist[m].p.col == j-1) sw = 0;
                 }
-                if(sw){
-                    ismoved = 1;
-                    gNew = cells[i][j].g + 1;
-                    hNew = calculateH(i, j-1, dest);
-                    fNew = gNew + hNew;
-                    openlist[opencount].f = fNew;
-                    openlist[opencount].p.row = i;
-                    openlist[opencount].p.col = j-1;
-                    opencount++;
-                }
+                gNew = cells[i][j].g + 1;
+                hNew = calculateH(i, j-1, dest);
+                fNew = gNew + hNew;
                 if (cells[i][j-1].f == INT_MAX || cells[i][j-1].f > fNew)
                 {
                     cells[i][j-1].f = fNew;
@@ -297,18 +290,19 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                     cells[i][j-1].h = hNew;
                     cells[i][j-1].parent_i = i;
                     cells[i][j-1].parent_j = j;
+                    if(sw){
+                        ismoved = 1;
+                        openlist[opencount].f = fNew;
+                        openlist[opencount].p.row = i;
+                        openlist[opencount].p.col = j-1;
+                        opencount++;
+                    }
                 }
                 
 
             }
         }
         
-        // if(!ismoved){
-        //     *pathcount = 1;
-        //     path[0].row = i;
-        //     path[0].col = j;
-        //     return;
-        // }
     }
     
     
