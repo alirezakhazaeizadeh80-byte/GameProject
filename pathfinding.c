@@ -84,7 +84,7 @@ void tracepath(int rows , int cols, cell cells[][cols], Pair dest, Pair* paths, 
     
 }
 
-void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, Pair* path, int *pathcount){
+void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, Pair* path, int *pathcount, int isBonus[][cols]){
     if(ori.row == dest.row && ori.col == dest.col) return;
     int opencount = 0;
 
@@ -116,8 +116,11 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
     openlist[opencount].p.row = i;
     openlist[opencount].p.col = j;
     opencount++;
-
+    
+    int ismoved;
     while(opencount){
+        ismoved = 0;
+
 
         int minfNode = openlist[0].f;
         int minIndex = 0;
@@ -125,8 +128,8 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
         for (int i = 0; i < opencount; i++)
         {
             if (openlist[i].f < minfNode){
-                minIndex = i;
                 minfNode = openlist[i].f;
+                minIndex = i;
             }
         }
         int i = openlist[minIndex].p.row;
@@ -140,22 +143,33 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
 
         if (isValid(rows, cols, i-1, j))
         {
-            if(isDestination(i-1, j, dest)){
+            if(isDestination(i-1, j, dest) && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i-1,j}, isWall) == 1){
+                ismoved = 1;
                 cells[i-1][j].parent_i = i;
                 cells[i-1][j].parent_j = j;
                 tracepath(rows, cols, cells, dest, path, pathcount);
                 return;
             }
 
-            else if(closedlist[i-1][j] == 0 && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i-1,j}, isWall) == 1){
-                gNew = cells[i][j].g + 1;
-                hNew = calculateH(i-1, j, dest);
-                fNew = gNew + hNew;
+            else if(closedlist[i-1][j] == 0 && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i-1,j}, isWall) == 1 && isBonus[i-1][j] == 0){
+                int sw = 1;
+                for (int m = 0; m < opencount; m++)
+                {
+                    if(openlist[m].p.row == i-1 && openlist[m].p.col == j) sw = 0;
+                }
+                
+                
+                if(sw){   
+                    ismoved = 1;
+                    gNew = cells[i][j].g + 1;
+                    hNew = calculateH(i-1, j, dest);
+                    fNew = gNew + hNew;
 
-                openlist[opencount].f = fNew;
-                openlist[opencount].p.row = i-1;
-                openlist[opencount].p.col = j;
-                opencount++;
+                    openlist[opencount].f = fNew;
+                    openlist[opencount].p.row = i-1;
+                    openlist[opencount].p.col = j;
+                    opencount++;
+                }
 
                 if (cells[i-1][j].f == INT_MAX || cells[i-1][j].f > fNew)
                 {
@@ -168,26 +182,35 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                 
 
             }
+
         }
         if (isValid(rows, cols, i+1, j))
         {
-            if(isDestination(i+1, j, dest)){
+            if(isDestination(i+1, j, dest) && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i+1,j}, isWall) == 1){
+                ismoved = 1;
                 cells[i+1][j].parent_i = i;
                 cells[i+1][j].parent_j = j;
                 tracepath(rows, cols, cells, dest, path, pathcount);
                 return;
             }
 
-            else if(closedlist[i+1][j] == 0 && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i+1,j}, isWall) == 1){
-                gNew = cells[i][j].g + 1;
-                hNew = calculateH(i+1, j, dest);
-                fNew = gNew + hNew;
-
-                openlist[opencount].f = fNew;
-                openlist[opencount].p.row = i+1;
-                openlist[opencount].p.col = j;
-                opencount++;
-
+            else if(closedlist[i+1][j] == 0 && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i+1,j}, isWall) == 1 && isBonus[i+1][j] == 0){
+                int sw = 1;
+                for (int m = 0; m < opencount; m++)
+                {
+                    if(openlist[m].p.row == i+1 && openlist[m].p.col == j) sw = 0;
+                }
+                
+                if(sw){
+                    ismoved = 1;
+                    gNew = cells[i][j].g + 1;
+                    hNew = calculateH(i+1, j, dest);
+                    fNew = gNew + hNew;
+                    openlist[opencount].f = fNew;
+                    openlist[opencount].p.row = i+1;
+                    openlist[opencount].p.col = j;
+                    opencount++;
+                }
                 if (cells[i+1][j].f == INT_MAX || cells[i+1][j].f > fNew)
                 {
                     cells[i+1][j].f = fNew;
@@ -199,26 +222,35 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                 
 
             }
+
         }
         if (isValid(rows, cols, i, j+1))
         {
-            if(isDestination(i, j+1, dest)){
+            if(isDestination(i, j+1, dest) && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i,j+1}, isWall) == 1){
+                ismoved = 1;
                 cells[i][j+1].parent_i = i;
                 cells[i][j+1].parent_j = j;
                 tracepath(rows, cols, cells, dest, path, pathcount);
                 return;
             }
 
-            else if(closedlist[i][j+1] == 0 && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i,j+1}, isWall) == 1){
-                gNew = cells[i][j].g + 1;
-                hNew = calculateH(i, j+1, dest);
-                fNew = gNew + hNew;
-
-                openlist[opencount].f = fNew;
-                openlist[opencount].p.row = i;
-                openlist[opencount].p.col = j+1;
-                opencount++;
-
+            else if(closedlist[i][j+1] == 0 && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i,j+1}, isWall) == 1  && isBonus[i][j+1] == 0){
+                int sw = 1;
+                for (int m = 0; m < opencount; m++)
+                {
+                    if(openlist[m].p.row == i && openlist[m].p.col == j+1) sw = 0;
+                }
+                
+                if(sw){
+                    ismoved = 1;
+                    gNew = cells[i][j].g + 1;
+                    hNew = calculateH(i, j+1, dest);
+                    fNew = gNew + hNew;
+                    openlist[opencount].f = fNew;
+                    openlist[opencount].p.row = i;
+                    openlist[opencount].p.col = j+1;
+                    opencount++;
+                }
                 if (cells[i][j+1].f == INT_MAX || cells[i][j+1].f > fNew)
                 {
                     cells[i][j+1].f = fNew;
@@ -230,26 +262,34 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
                 
 
             }
+
         }
         if (isValid(rows, cols, i, j-1))
         {
-            if(isDestination(i, j-1, dest)){
+            if(isDestination(i, j-1, dest ) && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i,j-1}, isWall) == 1){
+                ismoved = 1;
                 cells[i][j-1].parent_i = i;
                 cells[i][j-1].parent_j = j;
                 tracepath(rows, cols, cells, dest, path, pathcount);
                 return;
             }
 
-            else if(closedlist[i][j-1] == 0 && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i,j-1}, isWall) == 1){
-                gNew = cells[i][j].g + 1;
-                hNew = calculateH(i, j-1, dest);
-                fNew = gNew + hNew;
-
-                openlist[opencount].f = fNew;
-                openlist[opencount].p.row = i;
-                openlist[opencount].p.col = j-1;
-                opencount++;
-
+            else if(closedlist[i][j-1] == 0 && isUnBlocked(rows, cols, (Pair){i,j}, (Pair){i,j-1}, isWall) == 1 && isBonus[i][j-1] == 0){
+                int sw = 1;
+                for (int m = 0; m < opencount; m++)
+                {
+                    if(openlist[m].p.row == i && openlist[m].p.col == j-1) sw = 0;
+                }
+                if(sw){
+                    ismoved = 1;
+                    gNew = cells[i][j].g + 1;
+                    hNew = calculateH(i, j-1, dest);
+                    fNew = gNew + hNew;
+                    openlist[opencount].f = fNew;
+                    openlist[opencount].p.row = i;
+                    openlist[opencount].p.col = j-1;
+                    opencount++;
+                }
                 if (cells[i][j-1].f == INT_MAX || cells[i][j-1].f > fNew)
                 {
                     cells[i][j-1].f = fNew;
@@ -262,14 +302,16 @@ void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, P
 
             }
         }
-
-
         
-
-
-
+        // if(!ismoved){
+        //     *pathcount = 1;
+        //     path[0].row = i;
+        //     path[0].col = j;
+        //     return;
+        // }
     }
-
+    
+    
 
 
 }

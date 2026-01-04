@@ -29,6 +29,6 @@ int isUnBlocked(int rows, int cols, Pair ori, Pair dest, int isWall[rows][cols][
 int isDestination(int i, int j, Pair dest);
 int calculateH(int i, int j, Pair dest);
 void tracepath(int rows , int cols, cell cells[][cols], Pair dest, Pair* paths, int *pathcount);
-void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, Pair* path, int* pathcount);
+void aStar(int rows, int cols, int isWall[rows][cols][2], Pair ori, Pair dest, Pair* path, int* pathcount, int isBonus[][cols]);
 
 #endif

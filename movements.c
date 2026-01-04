@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include <stdbool.h>
 #include "pathfinding.h"
+#include <stdio.h>
 
 
 int isPlayer(int players[][2], int alivePlayers, int x, int y){
@@ -63,7 +64,7 @@ int searchNearestPlayer(int hunter ,int playercount ,int alivePlayers , int hunt
     return ans;
 }
 
-void updateHunters(int row, int cols, int playercount, int hunters[][2], int huntersCount, int players[][2],int alivePlayers, int PlHuDistance[][playercount] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols], Pair *path, int *pathcount){
+void updateHunters(int row, int cols, int playercount, int hunters[][2], int huntersCount, int players[][2],int alivePlayers, int PlHuDistance[][playercount] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols], Pair *path, int *pathcount, int isBonus[][cols]){
     int moved = 0;
     // int ignore[alivePlayers];
     // for(int j = 0; j < alivePlayers; j++)ignore[j] = 0;
@@ -78,13 +79,28 @@ void updateHunters(int row, int cols, int playercount, int hunters[][2], int hun
         int py = players[player][1];
         int shx = hunters[i][0];
         int shy = hunters[i][1];
-        aStar(row, cols, isWall, (Pair){shx,shy}, (Pair){px,py}, path, pathcount);
+        aStar(row, cols, isWall, (Pair){shx,shy}, (Pair){px,py}, path, pathcount, isBonus);
         isHunter[shx][shy] = 0;
         int r = path[*pathcount-2].row;
         int c = path[*pathcount-2].col;
-        isHunter[r][c] = 1;
-        hunters[i][0] = r;
-        hunters[i][1] = c;
+
+        if(*pathcount >= 2 && isHunter[r][c] == 0){
+            printf("%d %d %d\n",2,r,c);
+            isHunter[r][c] = 1;
+            hunters[i][0] = r;
+            hunters[i][1] = c;
+        }
+
+        else{
+            r = path[*pathcount-1].row;
+            c = path[*pathcount-1].col;
+            printf("%d %d %d\n",1,r,c);
+            if(isHunter[r][c] == 0){
+                isHunter[r][c] = 1;
+                hunters[i][0] = r;
+                hunters[i][1] = c;
+            }
+        }
 
         // if (shy - py > 1 && isWall[shx][shy - 1][1] == 0 && isWall[shx][shy - 2][1] == 0 && isHunter[shx][shy - 2] == 0)
         // {

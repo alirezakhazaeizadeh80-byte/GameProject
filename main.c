@@ -184,6 +184,8 @@ int main() {
     
     
     Rectangle BlaWalls[n][m][2];
+    int isBonus[n][m];
+    memset(isBonus,0,sizeof(isBonus));
     while (!WindowShouldClose())
     {
         Pair path[150];
@@ -291,7 +293,7 @@ int main() {
                         PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
                     }
                 }
-                updateHunters(n, m, playersCount, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter, path, &pathcount);
+                updateHunters(n, m, playersCount, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter, path, &pathcount, isBonus);
 
                 timer = -1;
             }
