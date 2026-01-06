@@ -28,8 +28,8 @@ void ShowingLightcore(int rows, int cols, int cellWidth, int cellHeight){
     DrawRectangle((cellWidth * (cols)) + 20, (cellHeight * (rows)) +20, cellWidth, cellHeight, lightcore);
 }
 
-void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth, int cellHeight, int playerMoved[], int state, float timer, float *transparency, char *s, int selected, int *PickedHunter){
-    int x, y, pX, pY; float scale, radius, centerX, centerY;
+void Showingpieces(Texture2D piece, int piecesNo, float pieces[][2], int cellWidth, int cellHeight, int playerMoved[], int state, float timer, float *transparency, char *s, int selected, int *PickedHunter){
+    float x, y, pX, pY; float scale, radius, centerX, centerY;
     if(*transparency >= 1.0)*s = 'D'; // Decrease transparency
     if(*transparency <= 0.3)*s = 'I'; // Increase transparency
     if(*s == 'I')*transparency += GetFrameTime()/3;
@@ -52,9 +52,6 @@ void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth
             continue;
         }
         if(state == 0 && playerMoved[i] == 0){
-            // radius = (scale * piece.height) / 2 * 0.65;
-            // centerX = pX + (scale * piece.width) / 2;
-            // centerY = pY + (scale * piece.height) / 2;
             if(timer != -1){
                 if(timer>=0.6)DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, Fade(WHITE, *transparency));
                 else DrawTextureEx(piece, (Vector2){pX,pY}, 0, scale, WHITE);
@@ -74,6 +71,7 @@ void Showingpieces(Texture2D piece, int piecesNo, int pieces[][2], int cellWidth
         }
     }
 }
+
 void ShowingBonusBox(Texture2D box, int bonusCount, int bonuses[][2], int cellWidth, int cellHeight){
     int x, y, pX, pY; float scale;
     for(int i = 0; i < bonusCount; i++){
@@ -115,7 +113,7 @@ int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wa
                 walls[*wallCount][1] = j-1;
                 wallsState[*wallCount] = 'V';
                 isWall[i][j-1][1] = 1;
-                wallTurn[*wallCount] = 2;
+                wallTurn[*wallCount] = 3;
                 *wallCount += 1;
                 if(state == 0)*tempWallCounter -= 1;
                 else{
@@ -130,7 +128,7 @@ int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wa
                 walls[*wallCount][1] = j;
                 wallsState[*wallCount] = 'H';
                 isWall[i-1][j][0] = 1;
-                wallTurn[*wallCount] = 2;
+                wallTurn[*wallCount] = 3;
                 *wallCount += 1;
                 if(state == 0)*tempWallCounter -= 1;
                 else{

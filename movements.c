@@ -201,7 +201,7 @@ void Win(int height, int width,int lightcoreX, int lightcoreY, int players[][2],
     }
 }
 
-void Lose(int height, int width, int cols,int players[][2], int *alivePlayers, int hunters[][2], int isHunter[][cols], float *fontsize,float maxsize, float speed , Font f, int *GameStoppage, int LightcoreH, int LightcoreW){
+void Lose(int height, int width, int cols,int players[][2], int *alivePlayers, int hunters[][2], int huntersCount, int isHunter[][cols], float *fontsize,float maxsize, float speed , Font f, int *GameStoppage, int LightcoreH, int LightcoreW, float oldPlayers[][2], float oldHunters[][2]){
     for (int i = 0; i < *alivePlayers; i++)
     {
         int px = players[i][0];
@@ -226,32 +226,42 @@ void Lose(int height, int width, int cols,int players[][2], int *alivePlayers, i
                 *GameStoppage=1;
             }
             else{
-                for(int j=i+1; j<*alivePlayers; j++){
-                    players[j-1][0] = players[j][0];
-                    players[j-1][1] = players[j][1];
+                int ind = FindIndex(hunters, huntersCount, px, py);
+                if(fabs(oldHunters[ind][0] - hunters[ind][0]) <= 0.02 && fabs(oldHunters[ind][1] - hunters[ind][1]) <= 0.02){
+                    for(int j=i+1; j<*alivePlayers; j++){
+                        players[j-1][0] = players[j][0];
+                        players[j-1][1] = players[j][1];
+                    }
+                    for(int k = 0; k < *alivePlayers; k++){
+                        oldPlayers[k][0]  = (float)players[k][0];
+                        oldPlayers[k][1]  = (float)players[k][1];
+                    }
+                    (*alivePlayers) -= 1;
                 }
-                (*alivePlayers) -= 1;
             }
         }
         
     }
 }
-// void AnimatePlayers(char dir, float *currX, float *currY, int targetX, int targetY, int players[][2], int player){
-//     if(dir == 'R'){
-//         if(*currY < targetY)*currY += GetFrameTime() / 3;
-//     }
-//     if(dir == 'L'){
-//         if(*currY > targetY)*currY -= GetFrameTime() / 3;
-//     }
-//     if(dir == 'D'){
-//         if(*currX < targetY)*currX += GetFrameTime() / 3;
-//     }
-//     if(dir == 'U'){
-//         if(*currY > targetY)*currX -= GetFrameTime() / 3;
-//     }
-//     players[player][0] = *currX;
-//     players[player][1] = *currY;
-// }
+ void AnimatePieces(float old[][2], int pieces[][2], int piecesCount, float speed){
+    float targetX, targetY;
+    for(int i=0; i<piecesCount; i++){
+        targetX = (float)pieces[i][0];
+        targetY = (float)pieces[i][1];
+        if(fabsf(old[i][1] - targetY) > 0.02f){
+            if(old[i][1] < (float)pieces[i][1])old[i][1]+=speed * GetFrameTime();
+            else if(old[i][1] > (float)pieces[i][1])old[i][1]-=speed * GetFrameTime();
+        }else{
+            old[i][1] = targetY;
+            if(fabsf(old[i][0] - targetX) > 0.02f){
+            if(old[i][0] < (float)pieces[i][0])old[i][0]+=speed * GetFrameTime();
+            else if(old[i][0] > (float)pieces[i][0])old[i][0]-=speed * GetFrameTime();
+            }else{
+                old[i][0] = targetX;
+            }
+        }
+    }
+}
 
 
 

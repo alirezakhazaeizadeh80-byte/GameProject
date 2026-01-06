@@ -54,7 +54,7 @@ int PickHunter(int hunters[][2], int huntersCount, float cellWidth, float cellHe
     }
     return error;
 }
-int FindBonusIndex(int bonuses[][2], int BonusesCount, int x, int y){
+int FindIndex(int bonuses[][2], int BonusesCount, int x, int y){
     for(int i = 0; i < BonusesCount; i++){
         if(x == bonuses[i][0] && y == bonuses[i][1])return i;
     }
@@ -174,14 +174,14 @@ void TextOutline(Vector2 pos, Vector2 origin, float fontSize, const char *str, F
         }
     }
 }
-void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int playerMoved[], int width, int height, Font f, char *TextState, float *TextTimer, int *TextPrinted, int hunters[][2], int huntersCount, int n, int m, int isWall[][m][2], int cellWidth, int cellHeight, int *showError, int alivePlayers, int players[][2], int IsBonus[][m], int *BonusesCount, int BonuaWalls[], float *MoveTimer, int isHunter[][m], int *BoardQuake, int bonuses[][2], int *counter, int *isQuake, int *PickedHunter, int *HunterX, int *HunterY){
+void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int playerMoved[], int width, int height, Font f, char *TextState, float *TextTimer, int *TextPrinted, int hunters[][2], int huntersCount, int n, int m, int isWall[][m][2], int cellWidth, int cellHeight, int *showError, int alivePlayers, int players[][2], int IsBonus[][m], int *BonusesCount, int BonuaWalls[], float *MoveTimer, int isHunter[][m], int *BoardQuake, int bonuses[][2], int *counter, int *isQuake, int *PickedHunter, int *HunterX, int *HunterY, int LightcoreX, int LightcoreY){
     int player = -1;
     if(*option == -1){
         for(int i = 0; i < alivePlayers; i++){
-            if(IsBonus[players[i][0]][players[i][1]] == 1){
+            if(IsBonus[players[i][0]][players[i][1]] == 1 && (players[i][0] != LightcoreX || players[i][1] != LightcoreY)){
                 *option = rand() % 4;
                 player = i;
-                for(int j = FindBonusIndex(bonuses, *BonusesCount, players[i][0], players[i][1]); j < *BonusesCount - 1; j++){
+                for(int j = FindIndex(bonuses, *BonusesCount, players[i][0], players[i][1]); j < *BonusesCount - 1; j++){
                     bonuses[j][0] = bonuses[j+1][0];
                     bonuses[j][1] = bonuses[j+1][1];
                 }
@@ -250,7 +250,8 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
             *TextState = 'I';
         }
         if(player != -1){
-            BonuaWalls[player] = 2;
+            if(BonuaWalls[player] == -1)BonuaWalls[player] = 2;
+            else BonuaWalls[player] += 2;
         }
         break;
     case 2:
@@ -268,7 +269,7 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
             }
             if(*TextTimer != -1)*TextTimer += GetFrameTime();
             char str3[50] = "Your bonus is Board Quake!";
-            Color color3 = {0,194,50,255};
+            Color color3 = {0,232,189,255};
             Vector2 textSize3 = MeasureTextEx(f, str3, *fontsize, 2);
             Vector2 pos3 = {width/2 , height/2};
             Vector2 origin3 = {textSize3.x / 2, textSize3.y/2};
@@ -312,7 +313,7 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
             }
             if(*TextTimer != -1)*TextTimer += GetFrameTime();
             char str4[50] = "You can pick and move one hunter!";
-            Color color4 = {0,194,50,255};
+            Color color4 = {252,218,5,255};
             Vector2 textSize4 = MeasureTextEx(f, str4, *fontsize, 2);
             Vector2 pos4 = {width/2 , height/2};
             Vector2 origin4 = {textSize4.x / 2, textSize4.y/2};
