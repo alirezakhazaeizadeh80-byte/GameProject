@@ -63,115 +63,37 @@ int searchNearestPlayer(int hunter ,int playercount ,int alivePlayers , int hunt
     return ans;
 }
 
-void updateHunters(int row, int cols, int playercount, int hunters[][2], int huntersCount, int players[][2],int alivePlayers, int PlHuDistance[][playercount] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols], int m, int isBonus[][m]){
-    int moved = 0;
-    // int ignore[alivePlayers];
-    // for(int j = 0; j < alivePlayers; j++)ignore[j] = 0;
+void updateHunters(int row, int cols, int playercount, int hunters[][2], int huntersCount, int players[][2],int alivePlayers, int PlHuDistance[][playercount] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][cols][2], int isHunter[][cols], Pair *path, int *pathcount, int isBonus[][cols]){
     for (int i = 0; i < huntersCount; i++)
     {
         int player = searchNearestPlayer(i, playercount, alivePlayers, huntersCount, PlHuDistance);
-        // if(player == -1){ // means no player that hunter gets nearer to it
-        //     for(int j = 0; j < alivePlayers; j++)ignore[j] = 0; // modify ignore[] for next hunter
-        //     continue;
-        // }
         int px = players[player][0];
         int py = players[player][1];
         int shx = hunters[i][0];
-        int shy = hunters[i][1]; 
-        if (shy - py > 1 && isWall[shx][shy - 1][1] == 0 && isWall[shx][shy - 2][1] == 0 && isHunter[shx][shy - 2] == 0 && isBonus[shx][shy - 2] == 0)
-        {
+        int shy = hunters[i][1];
+        aStar(row, cols, isWall, (Pair){shx,shy}, (Pair){px,py}, path, pathcount, isBonus);
+        printf("%d\n", *pathcount);
+        if(*pathcount != 0){
             isHunter[shx][shy] = 0;
-            isHunter[shx][shy - 2] = 1;
-            hunters[i][1] -= 2;
-            moved = 1;
-        }
-        else if (shy - py < -1 && isWall[shx][shy][1] == 0 && isWall[shx][shy + 1][1] == 0 && isHunter[shx][shy + 2] == 0 && isBonus[shx][shy + 2] == 0)
-        {
-            isHunter[shx][shy] = 0;
-            isHunter[shx][shy + 2] = 1;
-            hunters[i][1] += 2;
-            moved = 1;
-        }
-        else if (shy - py > 0 && isWall[shx][shy - 1][1] == 0 && isHunter[shx][shy - 1] == 0 && isBonus[shx][shy - 1] == 0)
-        {
-            isHunter[shx][shy] = 0;
-            isHunter[shx][shy - 1] = 1;
-            hunters[i][1] -= 1;
-            moved = 1;
-            if(shx - px > 0 && isWall[shx - 1][shy - 1][0] == 0 && isHunter[shx - 1][shy - 1] == 0 && isBonus[shx - 1][shy - 1] == 0)
-            {
-                isHunter[shx][shy - 1] = 0;
-                isHunter[shx - 1][shy - 1] = 1;
-                hunters[i][0] -= 1;
-                moved = 1;
-            }
-            else if(shx - px < 0 && isWall[shx][shy - 1][0] == 0 && isHunter[shx + 1][shy - 1] == 0 && isBonus[shx + 1][shy - 1] == 0)
-            {
-                isHunter[shx][shy - 1] = 0;
-                isHunter[shx + 1][shy - 1] = 1;
-                hunters[i][0] += 1;
-                moved = 1;
+            int r = path[*pathcount-2].row;
+            int c = path[*pathcount-2].col;
+
+            if(*pathcount >= 2 && isHunter[r][c] == 0){
+                isHunter[r][c] = 1;
+                hunters[i][0] = r;
+                hunters[i][1] = c;
             }
 
-        }
-        else if(shy - py < 0 && isWall[shx][shy][1] == 0 && isHunter[shx][shy + 1] == 0 && isBonus[shx][shy + 1] == 0)
-        {
-            isHunter[shx][shy] = 0;
-            isHunter[shx][shy + 1] = 1;
-            hunters[i][1] += 1;
-            moved = 1;
-            if(shx - px > 0 && isWall[shx - 1][shy + 1][0] == 0 && isHunter[shx - 1][shy + 1] == 0 && isBonus[shx - 1][shy + 1] == 0)
-            {
-                isHunter[shx][shy + 1] = 0;
-                isHunter[shx - 1][shy + 1] = 1;
-                hunters[i][0] -= 1;
-                moved = 1;
-            }
-            else if(shx - px < 0 && isWall[shx][shy + 1][0] == 0 && isHunter[shx + 1][shy + 1] == 0 && isBonus[shx + 1][shy + 1] == 0)
-            {
-                isHunter[shx][shy + 1] = 0;
-                isHunter[shx + 1][shy + 1] = 1;
-                hunters[i][0] += 1;
-                moved = 1;
+            else{
+                r = path[*pathcount-1].row;
+                c = path[*pathcount-1].col;            
+                if(isHunter[r][c] == 0){
+                    isHunter[r][c] = 1;
+                    hunters[i][0] = r;
+                    hunters[i][1] = c;
+                }
             }
         }
-        else {
-            if (shx - px > 1 && isWall[shx - 1][shy][0] == 0 && isWall[shx - 2][shy][0] == 0 && isHunter[shx - 2][shy] == 0 && isBonus[shx - 2][shy] == 0)
-            {
-                isHunter[shx][shy] = 0;
-                isHunter[shx - 2][shy] = 1;
-                hunters[i][0] -= 2;
-                moved = 1;
-            }
-            else if (shx - px < -1 && isWall[shx][shy][0] == 0 && isWall[shx + 1][shy][0] == 0 && isHunter[shx + 2][shy] == 0 && isBonus[shx + 2][shy] == 0)
-            {
-                isHunter[shx][shy] = 0;
-                isHunter[shx + 2][shy] = 1;
-                hunters[i][0] += 2;
-                moved = 1;
-            }
-            else if (shx - px > 0 && isWall[shx - 1][shy][0] == 0 && isHunter[shx - 1][shy] == 0 && isBonus[shx - 1][shy] == 0)
-            {
-                isHunter[shx][shy] = 0;
-                isHunter[shx - 1][shy] = 1;
-                hunters[i][0] -= 1;
-                moved = 1;
-            }
-            else if (shx - px < 0 && isWall[shx][shy][0] == 0 && isHunter[shx + 1][shy] == 0 && isBonus[shx + 1][shy] == 0)
-            {
-                isHunter[shx][shy] = 0;
-                isHunter[shx + 1][shy] = 1;
-                hunters[i][0] += 1;
-                moved = 1;
-            } 
-        }
-        // if(moved == 0){
-        //     ignore[player] = 1;
-        //     i--; // update this hunter again
-        // }else{
-        //     for(int j = 0; j < alivePlayers; j++)ignore[j] = 0; // modify ignore[] for next hunter
-        //     moved = 0;
-        // }
     }
     
 }
@@ -262,8 +184,6 @@ void Lose(int height, int width, int cols,int players[][2], int *alivePlayers, i
         }
     }
 }
-
-
 
 
 

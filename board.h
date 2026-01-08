@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include "raylib.h"
+#include <stdio.h>
 
 void DrawGridB(int rows, int cols, int cellWidth, int cellHeight, int height, int width);
 void ShowingLightcore(int rows, int cols, int cellWidth, int cellHeight);
@@ -13,4 +14,6 @@ void showTempWall(Vector2 mousePos, int rows, int cols, int cellWidth, int cellH
 int ShowingTempWalls(int rows, int cols, int walls[][2], int* wallCount ,char wallsState[], int* tempWallCounter, int isWall[rows][cols][2], Vector2 mousePos, Rectangle BlaWalls[rows][cols][2], int wallTurn[], int state, int BonusWalls[], int player);
 int min(int x1, int x2);
 int max(int x1, int x2);
+void SavingGame(int LightcoreH, int LightcoreW, int players[][2], int playersCount, int hunters[][2], int huntersCount, int isReturn, int walls[][2], int n, int m, int isWall[][m][2], int bonusCount, int isBonus[][m][2], int bonuses[][2], int playerMoved[], int BonusWalls[], int PlHuDistance[][playersCount], int oldHunters[][2], int oldPlayers[][2], char WallsState[], Rectangle BlaWalls[][m][2], int TempWallCount, int option, int WallTurn[]);
+void ReturnGame(int LightcoreH, int LightcoreW, int players[][2], int playersCount, int hunters[][2], int huntersCount, int isReturn, int walls[][2], int n, int m, int isWall[][m][2], int bonusCount, int isBonus[][m][2], int bonuses[][2], int playerMoved[], int BonusWalls[], int PlHuDistance[][playersCount], int oldHunters[][2], int oldPlayers[][2], char WallsState[300], Rectangle BlaWalls[][m][2], int TempWallCount, int option, int WallTurn[]);
 #endif

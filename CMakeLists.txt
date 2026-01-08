@@ -9,6 +9,7 @@ add_executable(game
     inputs.c
     movements.c
     bonus.c
+    pathfinding.c
 )
 
 target_include_directories(game PRIVATE

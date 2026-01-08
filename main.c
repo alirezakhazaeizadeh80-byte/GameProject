@@ -11,6 +11,7 @@
 # include <stdbool.h>
 # include <string.h>
 # include "bonus.h"
+# include "pathfinding.h"
 # include "definitions.h"
  
 
@@ -69,9 +70,9 @@ int main() {
     scanf("%d",&WallCount);
     char WallsState[300];
     int walls[300][2];
-    int IsBonus[n][m];
+    int isBonus[n][m];
     for(int i = 0; i < n; i++){
-        for(int j = 0; j < m; j++)IsBonus[i][j] = 0;
+        for(int j = 0; j < m; j++)isBonus[i][j] = 0;
     }
     int wallTurn[300];
     for (int i = 0; i < WallCount; i++)
@@ -181,18 +182,27 @@ int main() {
     for(int i = 0; i < 5; i++){
         int x = rand() % n;
         int y = rand() % m;
-        while(IsBonus[x][y] == 1 || isHunter[x][y] == 1 || CheckPlayers(players, playersCount, x, y) == 1){
+        while(isBonus[x][y] == 1 || isHunter[x][y] == 1 || CheckPlayers(players, playersCount, x, y) == 1){
             x = rand() % n;
             y = rand() % m;
         }
         bonuses[i][0] = x;
         bonuses[i][1] = y;
-        IsBonus[x][y] = 1;
+        isBonus[x][y] = 1;
     }
-    
     Rectangle BlaWalls[n][m][2];
+    //memset(isBonus,0,sizeof(isBonus));
     while (!WindowShouldClose())
     {
+        Pair path[150];
+        int pathcount = 0;
+        for (int i = 0; i < huntersCount; i++)
+        {
+            for (int j = 0; j < alivePlayers; j++)
+            {
+                PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
+            }
+        }
         for (int i = 0; i < huntersCount; i++)
         {
             for (int j = 0; j < alivePlayers; j++)
@@ -226,6 +236,7 @@ int main() {
 
                 if(sw == 0) player = -1;
                 sw = 0;
+                
             }
             if (IsKeyDown(KEY_T))
             {
@@ -301,7 +312,7 @@ int main() {
                         PlHuDistance[i][j] = abs(hunters[i][0] - players[j][0]) + abs(hunters[i][1] - players[j][1]);
                     }
                 }
-                updateHunters(n, m, playersCount, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter, m, IsBonus);
+                updateHunters(n, m, playersCount, hunters, huntersCount, players, alivePlayers, PlHuDistance, walls, WallsState, WallCount, isWall, isHunter, path, &pathcount, isBonus);
 
                 timer = -1;
             }
@@ -338,13 +349,13 @@ int main() {
             
 
             EndMode2D();
-            CheckBonus(&option, &FontSize, MaxSize, Speed, playerMoved, width, height, f, &TextState, &TextTimer, &TextPrinted, hunters, huntersCount, n, m, isWall, cellWidth, cellHeight, &showError, alivePlayers, players, IsBonus, &BonusCount, BonusWalls, &MoveTimer, isHunter, &BoardQuake, bonuses, &counter, &isQuake, &PickedHunter, &HunterX, &HunterY, lightCoreH, lightCoreW);
+            CheckBonus(&option, &FontSize, MaxSize, Speed, playerMoved, width, height, f, &TextState, &TextTimer, &TextPrinted, hunters, huntersCount, n, m, isWall, cellWidth, cellHeight, &showError, alivePlayers, players, isBonus, &BonusCount, BonusWalls, &MoveTimer, isHunter, &BoardQuake, bonuses, &counter, &isQuake, &PickedHunter, &HunterX, &HunterY, lightCoreH, lightCoreW);
             Win(height, width, lightCoreH, lightCoreW, players, playersCount, f, &fontsize, maxsize, speed, &GameStoppage);
             Lose(height, width, m, players, &alivePlayers, hunters, huntersCount, isHunter, &fontsize, maxsize, speed, f, &GameStoppage, lightCoreH, lightCoreW, oldPlayers, oldHunters);
 
         EndDrawing();
     }
-    
+    //SavingGame(lightCoreH, lightCoreW, players, playersCount, hunters, huntersCount, isReturn, walls, n, m, isWall, BonusCount, isBonus, bonuses, playerMoved, BonusWalls, PlHuDistance, oldHunters, oldPlayers, WallsState, BlaWalls, TempWallcounter, option, wallTurn);
     
 
 

@@ -209,4 +209,57 @@ void showTempWall(Vector2 mousePos, int rows, int cols, int cellWidth, int cellH
         }
 }
 }
+void SavingGame(int LightcoreH, int LightcoreW, int players[][2], int playersCount, int hunters[][2], int huntersCount, int isReturn, int walls[][2], int n, int m, int isWall[][m][2], int bonusCount, int isBonus[][m][2], int bonuses[][2], int playerMoved[], int BonusWalls[], int PlHuDistance[][playersCount], int oldHunters[][2], int oldPlayers[][2], char WallsState[], Rectangle BlaWalls[][m][2], int TempWallCount, int option, int WallTurn[]){
+    FILE *game = fopen("C:\\desktop\\gameproject\\game.dat", "wb");
+    fwrite(&isReturn, sizeof(int), 1, game);
+    fwrite(&n, sizeof(int), 1, game);
+    fwrite(&m, sizeof(int), 1, game);
+    fwrite(&LightcoreH, sizeof(int), 1, game);
+    fwrite(&LightcoreW, sizeof(int), 1, game);
+    fwrite(&playersCount, sizeof(int), 1, game);
+    fwrite(players, sizeof(int), playersCount * 2, game);
+    fwrite(&huntersCount, sizeof(int), 1, game);
+    fwrite(hunters, sizeof(int), huntersCount * 2, game);
+    fwrite(isWall, sizeof(int), n * m * 2, game);
+    fwrite(&bonusCount, sizeof(int),  1, game);
+    fwrite(isBonus, sizeof(int), n * m * 2, game);
+    fwrite(bonuses, sizeof(int), bonusCount, game);
+    fwrite(playerMoved, sizeof(int), playersCount, game);
+    fwrite(BonusWalls, sizeof(int), playersCount, game);
+    fwrite(PlHuDistance, sizeof(int), huntersCount * playersCount, game);
+    fwrite(oldHunters, sizeof(int), huntersCount * 2, game);
+    fwrite(oldPlayers, sizeof(int), playersCount * 2, game);
+    fwrite(WallsState, sizeof(char), 300 * 2, game);
+    fwrite(WallTurn, sizeof(int), 300 * 2, game);
+    fwrite(BlaWalls, sizeof(Rectangle), n * m * 2, game);
+    fwrite(&TempWallCount, sizeof(int), 1, game);
+    fwrite(&option, sizeof(int), 1, game);
+}
 
+void ReturnGame(int LightcoreH, int LightcoreW, int players[][2], int playersCount, int hunters[][2], int huntersCount, int isReturn, int walls[][2], int n, int m, int isWall[][m][2], int bonusCount, int isBonus[][m][2], int bonuses[][2], int playerMoved[], int BonusWalls[], int PlHuDistance[][playersCount], int oldHunters[][2], int oldPlayers[][2], char WallsState[300], Rectangle BlaWalls[][m][2], int TempWallCount, int option, int WallTurn[]){
+    FILE *game = fopen("C:\\desktop\\gameproject\\game.dat", "rb");
+    fread(&isReturn, sizeof(int), 1, game);
+    if(isReturn == 0)return;
+    fread(&n, sizeof(int), 1, game);
+    fread(&m, sizeof(int), 1, game);
+    fread(&LightcoreH, sizeof(int), 1, game);
+    fread(&LightcoreW, sizeof(int), 1, game);
+    fread(&playersCount, sizeof(int), 1, game);
+    fread(players, sizeof(int), playersCount * 2, game);
+    fread(&huntersCount, sizeof(int), 1, game);
+    fread(hunters, sizeof(int), huntersCount * 2, game);
+    fread(isWall, sizeof(int), n * m * 2, game);
+    fread(&bonusCount, sizeof(int),  1, game);
+    fread(isBonus, sizeof(int), n * m * 2, game);
+    fread(bonuses, sizeof(int), bonusCount, game);
+    fread(playerMoved, sizeof(int), playersCount, game);
+    fread(BonusWalls, sizeof(int), playersCount, game);
+    fread(PlHuDistance, sizeof(int), huntersCount * playersCount, game);
+    fread(oldHunters, sizeof(int), huntersCount * 2, game);
+    fread(oldPlayers, sizeof(int), playersCount * 2, game);
+    fread(WallsState, sizeof(char), 300 * 2, game);
+    fread(WallTurn, sizeof(int), 300 * 2, game);
+    fread(BlaWalls, sizeof(Rectangle), n * m * 2, game);
+    fread(&TempWallCount, sizeof(int), 1, game);
+    fread(&option, sizeof(int), 1, game);
+}

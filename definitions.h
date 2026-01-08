@@ -36,4 +36,5 @@
     int player = -1;
     int sw = 0;
     int counter = 0;
+    int isReturn = 0;
 #endif
