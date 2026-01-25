@@ -2,7 +2,7 @@
 # include <time.h>
 # include <stdlib.h>
 
-void signing(int x, int y, int n, int m, int mark[][m]){
+void signing(int x, int y, int n, int m, int mark[][15]){
     mark[x][y]=1;
     if(x-1>=0)mark[x-1][y]=1;
     if(x+1<n)mark[x+1][y]=1;
@@ -13,7 +13,7 @@ void signing(int x, int y, int n, int m, int mark[][m]){
     if(x+1<n && y-1>=0)mark[x+1][y-1]=1;
     if(x+1<n && y+1<m)mark[x+1][y+1]=1;
 }
-void dfs(int x, int y, int n, int m, int sign[][m], int *counter, int isWall[][m][2]){
+void dfs(int x, int y, int n, int m, int sign[][15], int *counter, int isWall[][15][2]){
     if(x-1>=0 && !sign[x-1][y] && !isWall[x-1][y][0]){
         (*counter)++;
         sign[x-1][y] = 1;
@@ -35,7 +35,7 @@ void dfs(int x, int y, int n, int m, int sign[][m], int *counter, int isWall[][m
         dfs(x, y+1, n, m, sign, counter, isWall);
         }
     }
-int ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsState[], int isWall[][m][2]){
+int ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsState[], int isWall[][15][2]){
     for(int i = 0; i < n; i++){
         for(int j = 0; j < m; j++){
             isWall[i][j][0] = 0;
@@ -44,7 +44,7 @@ int ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsStat
     }
     for (int i = 0; i < WallCount; i++)
     {
-        int sign[n][m];
+        int sign[15][15];
         time_t start = time(NULL);
         int sw=1;
         while(sw){            

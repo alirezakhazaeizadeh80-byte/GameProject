@@ -1,56 +1,49 @@
 #include "bonus.h"
 #include "movements.h"
 # include <stdio.h>
-int PickHunter(int hunters[][2], int huntersCount, float cellWidth, float cellHeight, int n, int m, int isWall[][m][2], int *option, int isHunter[][m], int *TextPrinted, int isBonus[][m], int *PickedHunter, int *HunterX, int *HunterY){
+int PickHunter(int hunters[][2], int huntersCount, float cellWidth, float cellHeight, int n, int m, int isWall[][15][2], int *PickBonusCount, int isHunter[][15], int *TextPrinted, int *PickedHunter, int *HunterX, int *HunterY, int players[][2], int alivePlayers){
     int x;
     int y;
-    // int *HunterX;
-    // int *HunterY;
     int error = 0;
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
         x = GetMouseX();
         y  = GetMouseY();
         *HunterX = (x)/cellWidth;
         *HunterY = (y)/cellHeight;
-    }else if(*PickedHunter == -1){
-        return error;
     }
-    
-    for(int i = 0; i < huntersCount; i++){
-        
-        if(hunters[i][1] == *HunterX && hunters[i][0] == *HunterY){
-            *PickedHunter = i;
-            if (IsKeyPressed(KEY_W))
-            {
-                if(hunters[i][0] == 0 || isWall[hunters[i][0] - 1][hunters[i][1]][0] == 1 || isBonus[hunters[i][0] - 1][hunters[i][1]] == 1)error = 1;
-                else {
-                    hunters[i][0] -= 1; *option = -1; isHunter[*HunterY][*HunterX] = 0; isHunter[*HunterY - 1][*HunterX] = 1; *TextPrinted = 0; *PickedHunter = -1; 
-                }
-            }
-            else if (IsKeyPressed(KEY_A))
-            {
-                if(hunters[i][1] == 0 || isWall[hunters[i][0]][hunters[i][1] - 1][1] == 1 || isBonus[hunters[i][0]][hunters[i][1] - 1] == 1)error = 1;
-                else {
-                    hunters[i][1] -= 1; *option = -1;  isHunter[*HunterY][*HunterX] = 0; isHunter[*HunterY][*HunterX - 1] = 1; *TextPrinted = 0; *PickedHunter = -1;
-                }
-            }
-            else if (IsKeyPressed(KEY_S))
-            {
-                if(hunters[i][0] == n - 1 || isWall[hunters[i][0]][hunters[i][1]][0] == 1 || isBonus[hunters[i][0] + 1][hunters[i][1]] == 1)error = 1;
-                else {
-                    hunters[i][0] += 1; *option = -1; isHunter[*HunterY][*HunterX] = 0; isHunter[*HunterY + 1][*HunterX] = 1; *TextPrinted = 0; *PickedHunter = -1;
-                    }
-                }
-                else if (IsKeyPressed(KEY_D))
-                {
-                    if(hunters[i][1] == m - 1 || isWall[hunters[i][0]][hunters[i][1]][1] == 1 || isBonus[hunters[i][0]][hunters[i][1] + 1] == 1)error = 1;
-                    else {
-                        hunters[i][1] += 1; *option = -1; isHunter[*HunterY][*HunterX] = 0; isHunter[*HunterY][*HunterX + 1] = 1; *TextPrinted = 0; *PickedHunter = -1;
-                    }
-                }
-                break;
-            }
-        
+    if(isHunter[*HunterY][*HunterX] == 0){
+        *PickedHunter = -1;
+        return 0;
+    }
+    int ind = FindIndex(hunters, huntersCount, *HunterY, *HunterX);
+    *PickedHunter = ind;
+    if (IsKeyPressed(KEY_W))
+    {
+        if(hunters[ind][0] == 0 || isWall[hunters[ind][0] - 1][hunters[ind][1]][0] == 1 || isHunter[hunters[ind][0] - 1][hunters[ind][1]] == 1 || CheckPlayers(players, alivePlayers, hunters[ind][0] - 1, hunters[ind][1]) == 1)error = 1;
+        else{
+            hunters[ind][0] -= 1; (*PickBonusCount) -= 1; isHunter[*HunterY][*HunterX] = 0; isHunter[*HunterY - 1][*HunterX] = 1; *PickedHunter = -1; 
+        }
+    }
+    else if (IsKeyPressed(KEY_A))
+    {
+        if(hunters[ind][1] == 0 || isWall[hunters[ind][0]][hunters[ind][1] - 1][1] == 1 || isHunter[hunters[ind][0]][hunters[ind][1] - 1] == 1 || CheckPlayers(players, alivePlayers, hunters[ind][0], hunters[ind][1] - 1) == 1)error = 1;
+        else{
+            hunters[ind][1] -= 1; (*PickBonusCount) -= 1;  isHunter[*HunterY][*HunterX] = 0; isHunter[*HunterY][*HunterX - 1] = 1; *PickedHunter = -1;
+        }
+    }
+    else if (IsKeyPressed(KEY_S))
+    {
+        if(hunters[ind][0] == n - 1 || isWall[hunters[ind][0]][hunters[ind][1]][0] == 1 || isHunter[hunters[ind][0] + 1][hunters[ind][1]] == 1 || CheckPlayers(players, alivePlayers, hunters[ind][0] + 1, hunters[ind][1]) == 1)error = 1;
+        else{
+            hunters[ind][0] += 1; (*PickBonusCount) -= 1; isHunter[*HunterY][*HunterX] = 0; isHunter[*HunterY + 1][*HunterX] = 1; *PickedHunter = -1;
+        }
+    }
+    else if (IsKeyPressed(KEY_D))
+    {
+        if(hunters[ind][1] == m - 1 || isWall[hunters[ind][0]][hunters[ind][1]][1] == 1 || isHunter[hunters[ind][0]][hunters[ind][1] + 1] == 1 || CheckPlayers(players, alivePlayers, hunters[ind][0], hunters[ind][1] + 1) == 1)error = 1;
+        else{
+            hunters[ind][1] += 1; (*PickBonusCount) -= 1; isHunter[*HunterY][*HunterX] = 0; isHunter[*HunterY][*HunterX + 1] = 1; *PickedHunter = -1;
+        }
     }
     return error;
 }
@@ -66,7 +59,7 @@ int CheckPlayers(int players[][2], int alivePlayers, int x, int y){
     }
     return 0;
 }
-void ChangePositionsRandomly(int players[][2], int hunters[][2], int aliveplayers, int huntersCount, int n, int m, int isHunter[][m], int isWall[][m][2], int isBonus[][m]){
+void ChangePositionsRandomly(int players[][2], int hunters[][2], int aliveplayers, int huntersCount, int n, int m, int isHunter[][15], int isWall[][15][2], int isBonus[][15]){
     srand(time(NULL));
     int dir;
     int moods = 4;
@@ -174,12 +167,13 @@ void TextOutline(Vector2 pos, Vector2 origin, float fontSize, const char *str, F
         }
     }
 }
-void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int playerMoved[], int width, int height, Font f, char *TextState, float *TextTimer, int *TextPrinted, int hunters[][2], int huntersCount, int n, int m, int isWall[][m][2], int cellWidth, int cellHeight, int *showError, int alivePlayers, int players[][2], int IsBonus[][m], int *BonusesCount, int BonuaWalls[], float *MoveTimer, int isHunter[][m], int *BoardQuake, int bonuses[][2], int *counter, int *isQuake, int *PickedHunter, int *HunterX, int *HunterY, int LightcoreX, int LightcoreY){
+void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int playerMoved[], int width, int height, Font f, char *TextState, float *TextTimer, int *TextPrinted, int hunters[][2], int huntersCount, int n, int m, int isWall[][15][2], int cellWidth, int cellHeight, int *showError, int alivePlayers, int players[][2], int IsBonus[][15], int *BonusesCount, int BonuaWalls[], float *MoveTimer, int isHunter[][15], int *BoardQuake, int bonuses[][2], int *counter, int *isQuake, int *PickedHunter, int *HunterX, int *HunterY, int LightcoreX, int LightcoreY, float oldHunters[][2], int *PickBonusCount, int *MovePlayerBonus){
     int player = -1;
     if(*option == -1){
         for(int i = 0; i < alivePlayers; i++){
             if(IsBonus[players[i][0]][players[i][1]] == 1 && (players[i][0] != LightcoreX || players[i][1] != LightcoreY)){
-                *option = rand() % 4;
+                *option = 2;
+                if(*option == 3)(*PickBonusCount) += 1; // related to Pick_Hunter bonus
                 player = i;
                 for(int j = FindIndex(bonuses, *BonusesCount, players[i][0], players[i][1]); j < *BonusesCount - 1; j++){
                     bonuses[j][0] = bonuses[j+1][0];
@@ -189,6 +183,21 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
                 (*BonusesCount) -= 1;
             }
         }
+    }
+    for(int i = 0; i < huntersCount; i++){
+        if(IsBonus[hunters[i][0]][hunters[i][1]] == 1){
+            if(fabsf(oldHunters[i][0] - (float)hunters[i][0]) <= 0.02 && fabsf(oldHunters[i][1] - (float)hunters[i][1]) <= 0.02){
+                for(int j = FindIndex(bonuses, *BonusesCount, hunters[i][0], hunters[i][1]); j < *BonusesCount - 1; j++){
+                    bonuses[j][0] = bonuses[j+1][0];
+                    bonuses[j][1] = bonuses[j+1][1];
+                }
+                IsBonus[hunters[i][0]][hunters[i][1]] = 0;
+                (*BonusesCount) -= 1;
+            }        
+        }
+    }
+    if(*PickBonusCount > 0){ // related to Pick_Hunter bonus
+        if(PickHunter(hunters, huntersCount, cellWidth, cellHeight, n, m, isWall, PickBonusCount, isHunter, TextPrinted, PickedHunter, HunterX, HunterY, players, alivePlayers) == 1)*showError = 1;
     }
     if(*option == -1)return; // No bonus
     switch (*option)
@@ -221,13 +230,13 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
         if(player != -1){
             playerMoved[player] = 0;
             (*counter) -= 1;
+            if((*counter) == (alivePlayers -1))*MovePlayerBonus = 1; // for debug unwanted game stopping 
         }
         break;
     case 1:
         if(*fontsize >= maxsize){
             *TextState = 'D';
             if(*TextTimer == -1)*TextTimer = 0;
-            //printf("n\n");
         }
         if(*TextState == 'I')
         {
@@ -278,55 +287,52 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
             if(*fontsize <= 0.0){
                 //*TextPrinted = 1;
                 *option = -1;
-                *MoveTimer = 0;
+                //*MoveTimer = 0;
                 *TextTimer = -1;
                 *TextState = 'I';
             }
         //}
-        if(*MoveTimer <= 2.0 && *option != -1){
+        if(*MoveTimer <= 1.8 && *option != -1){
             *BoardQuake = 1;
-            (*MoveTimer) += GetFrameTime();
-        }else if(*option != -1){
+            (*MoveTimer) += 1.0f * GetFrameTime();
+        }
+        else {
             *BoardQuake = 0;
-            //*MoveTimer = 0;
+            *MoveTimer = 0;
             //*option = -1;
             *TextPrinted = 0;
             *isQuake = 0;
         }
-        if(*MoveTimer >= 1.2 && *MoveTimer <= 2.0 && *isQuake == 0){
+        if(*MoveTimer >= 1.2 && *MoveTimer <= 1.8 && *isQuake == 0){
             ChangePositionsRandomly(players, hunters, alivePlayers, huntersCount, n, m, isHunter, isWall, IsBonus);
             *isQuake = 1;
         }
         break;
     case 3:
-        if(*TextPrinted == 0){
-            if(*fontsize >= maxsize){
-                *TextState = 'D';
-                if(*TextTimer == -1)*TextTimer = 0;
-            }
-            if(*TextState == 'I')
-            {
-                *fontsize += speed * GetFrameTime();
-            }
-            else if((*TextTimer) >= 2.0){
-                *fontsize -= speed * GetFrameTime();
-            }
-            if(*TextTimer != -1)*TextTimer += GetFrameTime();
-            char str4[50] = "You can pick and move one hunter!";
-            Color color4 = {252,218,5,255};
-            Vector2 textSize4 = MeasureTextEx(f, str4, *fontsize, 2);
-            Vector2 pos4 = {width/2 , height/2};
-            Vector2 origin4 = {textSize4.x / 2, textSize4.y/2};
-            TextOutline(pos4, origin4, *fontsize, str4, f);
-            DrawTextPro(f, str4, pos4, origin4, 0.0f, *fontsize, 2, color4);
-            if(*fontsize <= 0.0){
-                *TextPrinted = 1;
-                *TextTimer = -1;
-                *TextState = 'I';
-            }
-        }else{
-            if(PickHunter(hunters, huntersCount, cellWidth, cellHeight, n, m, isWall, option, isHunter, TextPrinted, IsBonus, PickedHunter, HunterX, HunterY) == 1)*showError = 1;
-        }        
+        if(*fontsize >= maxsize - 3.0f){
+            *TextState = 'D';
+            if(*TextTimer == -1)*TextTimer = 0;
+        }
+        if(*TextState == 'I')
+        {
+            *fontsize += speed * GetFrameTime();
+        }
+        else if((*TextTimer) >= 2.0){
+            *fontsize -= speed * GetFrameTime();
+        }
+        if(*TextTimer != -1)*TextTimer += GetFrameTime();
+        char str4[50] = "You can pick and move one hunter!";
+        Color color4 = {252,218,5,255};
+        Vector2 textSize4 = MeasureTextEx(f, str4, *fontsize, 2);
+        Vector2 pos4 = {width/2 , height/2};
+        Vector2 origin4 = {textSize4.x / 2, textSize4.y/2};
+        TextOutline(pos4, origin4, *fontsize, str4, f);
+        DrawTextPro(f, str4, pos4, origin4, 0.0f, *fontsize, 2, color4);
+        if(*fontsize <= 0.0){
+            *TextTimer = -1;
+            *TextState = 'I';
+            *option = -1;
+        }
         break;
     }
 }

@@ -25,10 +25,10 @@ typedef struct{
 
 void erase(pPair* openlist, int opencount, int index);
 int isValid(int rows, int cols, int i, int j);
-int isUnBlocked(int rows, int cols, Pair ori, Pair dest, int isWall[][cols][2]);
+int isUnBlocked(int rows, int cols, Pair ori, Pair dest, int isWall[][15][2]);
 int isDestination(int i, int j, Pair dest);
 int calculateH(int i, int j, Pair dest);
-void tracepath(int rows , int cols, cell cells[][cols], Pair dest, Pair* paths, int *pathcount);
-void aStar(int rows, int cols, int isWall[][cols][2], Pair ori, Pair dest, Pair* path, int* pathcount, int isBonus[][cols]);
+void tracepath(int rows , int cols, cell cells[][15], Pair dest, Pair* paths, int *pathcount);
+void aStar(int rows, int cols, int isWall[][15][2], Pair ori, Pair dest, Pair* path, int* pathcount, int isBonus[][15]);
 
 #endif

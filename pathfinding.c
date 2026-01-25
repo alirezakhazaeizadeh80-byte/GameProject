@@ -33,7 +33,7 @@ int isValid(int rows, int cols, int i, int j)
     else return 0;
 }
 
-int isUnBlocked(int rows, int cols, Pair ori, Pair dest,  int isWall[][cols][2]){
+int isUnBlocked(int rows, int cols, Pair ori, Pair dest,  int isWall[][15][2]){
     if (ori.col == dest.col && (ori.row - dest.row) == 1){
         if(isWall[ori.row-1][ori.col][0] == 1) return 0;
         else return 1;
@@ -65,7 +65,7 @@ int calculateH(int i, int j, Pair dest){
     return ans;
 }
 
-void tracepath(int rows , int cols, cell cells[][cols], Pair dest, Pair* paths, int *pathcount){
+void tracepath(int rows , int cols, cell cells[][15], Pair dest, Pair* paths, int *pathcount){
     *pathcount = 0;
 
     int i =  dest.row;
@@ -84,12 +84,12 @@ void tracepath(int rows , int cols, cell cells[][cols], Pair dest, Pair* paths, 
     
 }
 
-void aStar(int rows, int cols, int isWall[][cols][2], Pair ori, Pair dest, Pair* path, int *pathcount, int isBonus[][cols]){
+void aStar(int rows, int cols, int isWall[][15][2], Pair ori, Pair dest, Pair* path, int *pathcount, int isBonus[][15]){
     if(ori.row == dest.row && ori.col == dest.col) return;
     int opencount = 0;
 
-    cell cells[rows][cols];
-    int closedlist[rows][cols];
+    cell cells[15][15];
+    int closedlist[15][15];
 
     for (int i = 0; i < rows; i++)
     {
