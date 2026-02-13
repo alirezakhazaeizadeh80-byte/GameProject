@@ -2,6 +2,7 @@
 #define DEFINITIONS_H
 #include <stdio.h>
 #include <stdlib.h>
+#include "raylib.h"
 /*
  * File: definitions.h
  * Purpose: Global game state and configuration variables.
@@ -86,4 +87,6 @@ int PickBonusCount = 0;
 int MovePlayerBonus = -1;
 float vul = 0.5f;
 int StartFade = 0;
+Pair path[150];
+int pathcount = 0;
 #endif

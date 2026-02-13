@@ -62,234 +62,65 @@ void movePieces(int rows, int cols, int players[][2], int player, int walls[][2]
 }
 
 /* Find the nearest non-ignored player for a hunter. */
-int searchNearestPlayer(int hunter, int alivePlayers, int huntersCount, int PlHuDistance[][15], int ignore[])
+static int nearestPlayerAStar(int hunter, int alivePlayers, int PlHuDistance[][15])
 {
-    int min = 30;
-    int ans = -1;
+    int best = -1;
+    int minD = INT_MAX;
     for (int i = 0; i < alivePlayers; i++)
     {
-        if (ignore[i] == 1)
-            continue;
-        if (PlHuDistance[hunter][i] < min)
+        if (PlHuDistance[hunter][i] < minD)
         {
-            min = PlHuDistance[hunter][i];
-            ans = i;
+            minD = PlHuDistance[hunter][i];
+            best = i;
         }
     }
-    return ans;
+    return best;
 }
 
 /* Update hunter positions based on distance and wall constraints. */
-void updateHunters(int n, int m, int hunters[][2], int huntersCount, int players[][2], int alivePlayers, int PlHuDistance[][15], int isWall[][15][2], int isHunter[][15], int dir[])
-{
-    int moved = 0;
-    int ignore[alivePlayers];
-    for (int j = 0; j < alivePlayers; j++)
-        ignore[j] = 0;
+void updateHunters(int row, int cols, int hunters[][2], int huntersCount, int players[][2],int alivePlayers, int PlHuDistance[][15] ,int walls[][2], char wallStates[],int wallsCount, int isWall[][15][2], int isHunter[][15], Pair *path, int *pathcount, int isBonus[][15], int dir[]){
+    for(int i = 0; i < huntersCount; i++)dir[i] = -1;
     for (int i = 0; i < huntersCount; i++)
     {
-        moved = 0;
-        int player = searchNearestPlayer(i, alivePlayers, huntersCount, PlHuDistance, ignore);
-        if (player == -1)
-        { // means no player that hunter gets nearer to it
-            for (int j = 0; j < alivePlayers; j++)
-                ignore[j] = 0; // modify ignore[] for next hunter
+        int player = nearestPlayerAStar(i, alivePlayers, PlHuDistance);
+        if (player < 0 ||  player >= alivePlayers) {
             continue;
         }
         int px = players[player][0];
         int py = players[player][1];
         int hx = hunters[i][0];
         int hy = hunters[i][1];
-        if (hy > 1 && hy - py > 1 && isWall[hx][hy - 1][1] == 0 && isWall[hx][hy - 2][1] == 0 && isHunter[hx][hy - 2] == 0)
-        {
-            isHunter[hx][hy] = 0;
-            isHunter[hx][hy - 2] = 1;
-            hunters[i][1] -= 2;
-            moved = 2;
-            dir[i] = -1;
-        }
-        else if (hy < m - 2 && hy - py < -1 && isWall[hx][hy][1] == 0 && isWall[hx][hy + 1][1] == 0 && isHunter[hx][hy + 2] == 0)
-        {
-            isHunter[hx][hy] = 0;
-            isHunter[hx][hy + 2] = 1;
-            hunters[i][1] += 2;
-            moved = 2;
-            dir[i] = -1;
-        }
-        else if (hy > 0 && hy - py > 0 && isWall[hx][hy - 1][1] == 0 && isHunter[hx][hy - 1] == 0)
-        {
-            isHunter[hx][hy] = 0;
-            isHunter[hx][hy - 1] = 1;
-            hunters[i][1] -= 1;
-            moved = 1;
-            dir[i] = -1;
-            if (hx > 0 && hx - px > 0 && isWall[hx - 1][hy - 1][0] == 0 && isHunter[hx - 1][hy - 1] == 0)
-            {
-                isHunter[hx][hy - 1] = 0;
-                isHunter[hx - 1][hy - 1] = 1;
-                hunters[i][0] -= 1;
-                moved = 2;
-                dir[i] = 0;
-            }
-            else if (hx < n - 1 && hx - px < 0 && isWall[hx][hy - 1][0] == 0 && isHunter[hx + 1][hy - 1] == 0)
-            {
-                isHunter[hx][hy - 1] = 0;
-                isHunter[hx + 1][hy - 1] = 1;
-                hunters[i][0] += 1;
-                moved = 2;
-                dir[i] = 0;
-            }
-        }
-        else if (hy < m - 1 && hy - py < 0 && isWall[hx][hy][1] == 0 && isHunter[hx][hy + 1] == 0)
-        {
-            isHunter[hx][hy] = 0;
-            isHunter[hx][hy + 1] = 1;
-            hunters[i][1] += 1;
-            moved = 1;
-            dir[i] = -1;
-            if (hx > 0 && hx - px > 0 && isWall[hx - 1][hy + 1][0] == 0 && isHunter[hx - 1][hy + 1] == 0)
-            {
-                isHunter[hx][hy + 1] = 0;
-                isHunter[hx - 1][hy + 1] = 1;
-                hunters[i][0] -= 1;
-                moved = 2;
-                dir[i] = 0;
-            }
-            else if (hx < n - 1 && hx - px < 0 && isWall[hx][hy + 1][0] == 0 && isHunter[hx + 1][hy + 1] == 0)
-            {
-                isHunter[hx][hy + 1] = 0;
-                isHunter[hx + 1][hy + 1] = 1;
-                hunters[i][0] += 1;
-                moved = 2;
-                dir[i] = 0;
-            }
-        }
-        if (moved != 2)
-        { // check for a better movement
-            if (hx > 1 && hx - px > 1 && isWall[hx - 1][hy][0] == 0 && isWall[hx - 2][hy][0] == 0 && isHunter[hx - 2][hy] == 0)
-            {
-                if (moved == 1)
-                {
-                    isHunter[hunters[i][0]][hunters[i][1]] = 0;
-                    hunters[i][0] = hx;
-                    hunters[i][1] = hy;
+        int r, c;
+        aStar(row, cols, isWall, (Pair){hx,hy}, (Pair){px,py}, path, pathcount, isBonus);
+        if(*pathcount != 0){
+            /* Priority: move 2 cells if possible, otherwise move 1 cell. */
+            if(*pathcount >= 2){
+                r = path[*pathcount-2].row;
+                c = path[*pathcount-2].col;
+                if(isHunter[r][c] == 0){
+                    isHunter[hx][hy] = 0;
+                    isHunter[r][c] = 1;
+                    if(r == hunters[i][0]  || c == hunters[i][1]) dir[i] = 2;
+                    else if(path[*pathcount - 1].row == hunters[i][0]) dir[i] = 0;
+                    else if(path[*pathcount - 1].col == hunters[i][1]) dir[i] = 1;
+                    hunters[i][0] = r;
+                    hunters[i][1] = c;
+                    continue;
                 }
-                isHunter[hx][hy] = 0;
-                isHunter[hx - 2][hy] = 1;
-                hunters[i][0] -= 2;
-                moved = 2;
-                dir[i] = -1;
             }
-            else if (hx < n - 2 && hx - px < -1 && isWall[hx][hy][0] == 0 && isWall[hx + 1][hy][0] == 0 && isHunter[hx + 2][hy] == 0)
-            {
-                if (moved == 1)
-                {
-                    isHunter[hunters[i][0]][hunters[i][1]] = 0;
-                    hunters[i][0] = hx;
-                    hunters[i][1] = hy;
-                }
-                isHunter[hx][hy] = 0;
-                isHunter[hx + 2][hy] = 1;
-                hunters[i][0] += 2;
-                moved = 2;
-                dir[i] = -1;
-            }
-            else if (hx > 0 && hx - px > 0 && isWall[hx - 1][hy][0] == 0 && isHunter[hx - 1][hy] == 0)
-            {
 
-                if (hy < m - 1 && hy - py < 0 && isWall[hx - 1][hy][1] == 0 && isHunter[hx - 1][hy + 1] == 0)
-                {
-                    if (moved == 1)
-                    {
-                        isHunter[hunters[i][0]][hunters[i][1]] = 0;
-                        hunters[i][0] = hx;
-                        hunters[i][1] = hy;
-                    }
-                    isHunter[hx][hy] = 0;
-                    isHunter[hx - 1][hy + 1] = 1;
-                    hunters[i][0] -= 1;
-                    hunters[i][1] += 1;
-                    moved = 2;
-                    dir[i] = 1;
-                }
-                else if (hy > 0 && hy - py > 0 && isWall[hx - 1][hy - 1][1] == 0 && isHunter[hx - 1][hy - 1] == 0)
-                {
-                    if (moved == 1)
-                    {
-                        isHunter[hunters[i][0]][hunters[i][1]] = 0;
-                        hunters[i][0] = hx;
-                        hunters[i][1] = hy;
-                    }
-                    isHunter[hx][hy] = 0;
-                    isHunter[hx - 1][hy - 1] = 1;
-                    hunters[i][0] -= 1;
-                    hunters[i][1] -= 1;
-                    moved = 2;
-                    dir[i] = 1;
-                }
-                else if (moved == 0)
-                {
-                    isHunter[hx][hy] = 0;
-                    isHunter[hx - 1][hy] = 1;
-                    hunters[i][0] -= 1;
-                    moved = 1;
-                    dir[i] = -1;
-                }
+            r = path[*pathcount-1].row;
+            c = path[*pathcount-1].col;
+            if(isHunter[r][c] == 0){
+                isHunter[hx][hy] = 0;
+                isHunter[r][c] = 1;
+                dir[i] = 2;
+                hunters[i][0] = r;
+                hunters[i][1] = c;
             }
-            else if (hx < n - 1 && hx - px < 0 && isWall[hx][hy][0] == 0 && isHunter[hx + 1][hy] == 0)
-            {
-
-                if (hy < m - 1 && hy - py < 0 && isWall[hx + 1][hy][1] == 0 && isHunter[hx + 1][hy + 1] == 0)
-                {
-                    if (moved == 1)
-                    { // ignore previous horizental movement
-                        isHunter[hunters[i][0]][hunters[i][1]] = 0;
-                        hunters[i][0] = hx;
-                        hunters[i][1] = hy;
-                    }
-                    isHunter[hx][hy] = 0;
-                    isHunter[hx + 1][hy + 1] = 1;
-                    hunters[i][0] += 1;
-                    hunters[i][1] += 1;
-                    moved = 2;
-                    dir[i] = 1;
-                }
-                else if (hy > 0 && hy - py > 0 && isWall[hx + 1][hy - 1][1] == 0 && isHunter[hx + 1][hy - 1] == 0)
-                {
-                    if (moved == 1)
-                    {
-                        isHunter[hunters[i][0]][hunters[i][1]] = 0;
-                        hunters[i][0] = hx;
-                        hunters[i][1] = hy;
-                    }
-                    isHunter[hx][hy] = 0;
-                    isHunter[hx + 1][hy - 1] = 1;
-                    hunters[i][0] += 1;
-                    hunters[i][1] -= 1;
-                    moved = 2;
-                    dir[i] = 1;
-                }
-                else if (moved == 0)
-                {
-                    isHunter[hx][hy] = 0;
-                    isHunter[hx + 1][hy] = 1;
-                    hunters[i][0] += 1;
-                    moved = 1;
-                    dir[i] = -1;
-                }
-            }
-        }
-        if (moved == 0)
-        {
-            ignore[player] = 1;
-            i--; // update this hunter again
-        }
-        else
-        {
-            for (int j = 0; j < alivePlayers; j++)
-                ignore[j] = 0;
         }
     }
+    
 }
 /* Draw the win screen if any player reaches the lightcore. */
 void Win(int height, int width, int lightcoreX, int lightcoreY, int players[][2], int playerCount, Font f, float *fontsize, float maxsize, float speed, int *GameStoppage)
@@ -366,87 +197,51 @@ void Lose(int height, int width, int cols, int players[][2], int *alivePlayers, 
     }
 }
 /* Interpolate piece positions for smooth movement. */
-void AnimatePieces(float old[][2], int pieces[][2], int piecesCount, float speed, int state, int dir[])
-{
+void AnimatePieces(float old[][2], int pieces[][2], int piecesCount, float speed, int state, int dir[]){
+    // state = 0 -> players
+    // state = 1 -> hunters
     float targetX, targetY;
-    for (int i = 0; i < piecesCount; i++)
-    {
+    for(int i=0; i<piecesCount; i++){
         targetX = (float)pieces[i][0];
         targetY = (float)pieces[i][1];
-        if (state == 1)
-        {
-            if (dir[i] == 0)
-            {
-                if (fabsf(old[i][1] - targetY) > 0.02f)
-                {
-                    if (old[i][1] < (float)pieces[i][1])
-                        old[i][1] += speed * GetFrameTime();
-                    else if (old[i][1] > (float)pieces[i][1])
-                        old[i][1] -= speed * GetFrameTime();
-                }
-                else
-                {
+        if(state == 1){ // hunters
+            if(dir[i] == 0){ // horizontally and then vertically
+                if(fabsf(old[i][1] - targetY) > 0.02f){
+                    if(old[i][1] < (float)pieces[i][1])old[i][1]+=speed * GetFrameTime();
+                    else if(old[i][1] > (float)pieces[i][1])old[i][1]-=speed * GetFrameTime();
+                }else{
                     old[i][1] = targetY;
-                    if (fabsf(old[i][0] - targetX) > 0.02f)
-                    {
-                        if (old[i][0] < (float)pieces[i][0])
-                            old[i][0] += speed * GetFrameTime();
-                        else if (old[i][0] > (float)pieces[i][0])
-                            old[i][0] -= speed * GetFrameTime();
-                    }
-                    else
-                    {
+                    if(fabsf(old[i][0] - targetX) > 0.02f){
+                        if(old[i][0] < (float)pieces[i][0])old[i][0]+=speed * GetFrameTime();
+                        else if(old[i][0] > (float)pieces[i][0])old[i][0]-=speed * GetFrameTime();
+                    }else{
                         old[i][0] = targetX;
                     }
                 }
-            }
-            else
-            {
-                if (fabsf(old[i][0] - targetX) > 0.02f)
-                {
-                    if (old[i][0] < (float)pieces[i][0])
-                        old[i][0] += speed * GetFrameTime();
-                    else if (old[i][0] > (float)pieces[i][0])
-                        old[i][0] -= speed * GetFrameTime();
-                }
-                else
-                {
+            }else{ // vertically and then horizontally(and 2 cells vertically or 2 cells horizontally)
+                if(fabsf(old[i][0] - targetX) > 0.02f){
+                    if(old[i][0] < (float)pieces[i][0])old[i][0]+=speed * GetFrameTime();
+                    else if(old[i][0] > (float)pieces[i][0])old[i][0]-=speed * GetFrameTime();
+                }else{
                     old[i][0] = targetX;
-                    if (fabsf(old[i][1] - targetY) > 0.02f)
-                    {
-                        if (old[i][1] < (float)pieces[i][1])
-                            old[i][1] += speed * GetFrameTime();
-                        else if (old[i][1] > (float)pieces[i][1])
-                            old[i][1] -= speed * GetFrameTime();
-                    }
-                    else
-                    {
+                    if(fabsf(old[i][1] - targetY) > 0.02f){
+                        if(old[i][1] < (float)pieces[i][1])old[i][1]+=speed * GetFrameTime();
+                        else if(old[i][1] > (float)pieces[i][1])old[i][1]-=speed * GetFrameTime();
+                    }else{
                         old[i][1] = targetY;
                     }
                 }
             }
-        }
-        else
-        {
-            if (fabsf(old[i][1] - targetY) > 0.02f)
-            {
-                if (old[i][1] < (float)pieces[i][1])
-                    old[i][1] += speed * GetFrameTime();
-                else if (old[i][1] > (float)pieces[i][1])
-                    old[i][1] -= speed * GetFrameTime();
-            }
-            else
-            {
+        }else{ // players
+            if(fabsf(old[i][1] - targetY) > 0.02f){ // horizontally
+                if(old[i][1] < (float)pieces[i][1])old[i][1]+=speed * GetFrameTime();
+                else if(old[i][1] > (float)pieces[i][1])old[i][1]-=speed * GetFrameTime();
+            }else{ // vertically
                 old[i][1] = targetY;
-                if (fabsf(old[i][0] - targetX) > 0.02f)
-                {
-                    if (old[i][0] < (float)pieces[i][0])
-                        old[i][0] += speed * GetFrameTime();
-                    else if (old[i][0] > (float)pieces[i][0])
-                        old[i][0] -= speed * GetFrameTime();
-                }
-                else
-                {
+                if(fabsf(old[i][0] - targetX) > 0.02f){
+                    if(old[i][0] < (float)pieces[i][0])old[i][0]+=speed * GetFrameTime();
+                    else if(old[i][0] > (float)pieces[i][0])old[i][0]-=speed * GetFrameTime();
+                }else{
                     old[i][0] = targetX;
                 }
             }
@@ -455,7 +250,7 @@ void AnimatePieces(float old[][2], int pieces[][2], int piecesCount, float speed
 }
 
 /* Handle player input, wall placement, hunter updates, and screen shake. */
-void PiecesMoving(int GameStoppage, float cellWidth, float cellHeight, int *alivePlayers, int players[][2], int playerMoved[], int *player, int sw, int n, int m, int walls[][2], int *WallCount, int BonusWalls[], int *TempWallcounter, int isWall[][15][2], Rectangle BlaWalls[][15][2], char WallsState[], int *showError, int *counter, float *timer, int wallTurn[], int hunters[][2], int huntersCount, int PlHuDistance[][15], float *shakeTimeLeft, int BoardQuake, int isHunter[][15], int dir[], int isBonus[][15], Camera2D *cam, float shakeIntensity, Vector2 *shakeOffset, int *option, int *MovePlayerBonus)
+void PiecesMoving(int GameStoppage, float cellWidth, float cellHeight, int *alivePlayers, int players[][2], int playerMoved[], int *player, int sw, int n, int m, int walls[][2], int *WallCount, int BonusWalls[], int *TempWallcounter, int isWall[][15][2], Rectangle BlaWalls[][15][2], char WallsState[], int *showError, int *counter, float *timer, int wallTurn[], int hunters[][2], int huntersCount, int PlHuDistance[][15], float *shakeTimeLeft, int BoardQuake, int isHunter[][15], int dir[], int isBonus[][15], Camera2D *cam, float shakeIntensity, Vector2 *shakeOffset, int *option, int *MovePlayerBonus, Pair *path, int *pathcount)
 {
     if (GameStoppage == 0)
     {
@@ -597,7 +392,7 @@ void PiecesMoving(int GameStoppage, float cellWidth, float cellHeight, int *aliv
                 }
             }
 
-            updateHunters(n, m, hunters, huntersCount, players, *alivePlayers, PlHuDistance, isWall, isHunter, dir);
+            updateHunters(n, m, hunters,  huntersCount, players, *alivePlayers, PlHuDistance, walls, WallsState, *WallCount, isWall, isHunter, path, pathcount, isBonus, dir);
 
             *timer = -1;
         }

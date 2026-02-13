@@ -71,11 +71,42 @@ int ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsStat
     {
         int sign[15][15];
         time_t start = time(NULL);
-        int sw = 1;
-        while (sw)
+        int state, X, Y;
+        do{
+            state = rand() % 2; // Horizontal or vertical
+            if (state == 0)
+            {
+                X = rand() % (n - 1);
+                Y = rand() % m;
+            }
+            else
+            {
+                X = rand() % n;
+                Y = rand() % (m - 1);
+            }
+        }while(isWall[X][Y][state] == 1);
+        int counter = 1;
+        isWall[X][Y][state] = 1;
+        for (int i = 0; i < n; i++)
         {
-            int state = rand() % 2; // Horizontal or vertical
-            int X, Y;
+            for (int j = 0; j < m; j++)
+            {
+                sign[i][j] = 0;
+            }
+        }
+        sign[0][0] = 1;
+        dfs(0, 0, n, m, sign, &counter, isWall);
+        if (counter != n * m)
+            isWall[X][Y][state] = 0;
+        while (counter != n * m)
+        {
+            if (time(NULL) - start >= 1)
+            {
+                printf("\033[31mThe number of walls is too high, Enter fewer.\n\033[0m");
+                return 0;
+            }
+
+            state = rand() % 2;
             if (state == 0)
             {
                 X = rand() % (n - 1);
@@ -88,7 +119,7 @@ int ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsStat
             }
             if (isWall[X][Y][state] == 0)
             {
-                int counter = 1;
+                counter = 1;
                 isWall[X][Y][state] = 1;
                 for (int i = 0; i < n; i++)
                 {
@@ -101,55 +132,17 @@ int ControllingWalls(int WallCount, int n, int m, int walls[][2], char WallsStat
                 dfs(0, 0, n, m, sign, &counter, isWall);
                 if (counter != n * m)
                     isWall[X][Y][state] = 0;
-                while (counter != n * m)
-                {
-
-                    if (time(NULL) - start >= 1)
-                    {
-                        printf("\033[31mThe number of walls is too high, Enter fewer.\n\033[0m");
-                        return 0;
-                    }
-
-                    state = rand() % 2;
-                    if (state == 0)
-                    {
-                        X = rand() % (n - 1);
-                        Y = rand() % m;
-                    }
-                    else
-                    {
-                        X = rand() % n;
-                        Y = rand() % (m - 1);
-                    }
-                    if (isWall[X][Y][state] == 0)
-                    {
-                        counter = 1;
-                        isWall[X][Y][state] = 1;
-                        for (int i = 0; i < n; i++)
-                        {
-                            for (int j = 0; j < m; j++)
-                            {
-                                sign[i][j] = 0;
-                            }
-                        }
-                        sign[0][0] = 1;
-                        dfs(0, 0, n, m, sign, &counter, isWall);
-                        if (counter != n * m)
-                            isWall[X][Y][state] = 0;
-                    }
-                }
-                if (state == 0)
-                {
-                    WallsState[i] = 'H';
-                }
-                else
-                {
-                    WallsState[i] = 'V';
-                }
-                walls[i][0] = X;
-                walls[i][1] = Y;
-                sw = 0;
             }
         }
+        if (state == 0)
+        {
+            WallsState[i] = 'H';
+        }
+        else
+        {
+            WallsState[i] = 'V';
+        }
+        walls[i][0] = X;
+        walls[i][1] = Y;
     }
 }

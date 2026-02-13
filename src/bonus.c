@@ -81,11 +81,11 @@ int PickHunter(int hunters[][2], int huntersCount, float cellWidth, float cellHe
     return error;
 }
 /* Find an index in a 2D list of positions. */
-int FindIndex(int bonuses[][2], int BonusesCount, int x, int y)
+int FindIndex(int array[][2], int arrayCount, int x, int y)
 {
-    for (int i = 0; i < BonusesCount; i++)
+    for (int i = 0; i < arrayCount; i++)
     {
-        if (x == bonuses[i][0] && y == bonuses[i][1])
+        if (x == array[i][0] && y == array[i][1])
             return i;
     }
     return -1;
@@ -298,7 +298,7 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
         {
             if (IsBonus[players[i][0]][players[i][1]] == 1 && (players[i][0] != LightcoreX || players[i][1] != LightcoreY))
             {
-                *option = 2;
+                *option = rand() % 4;
                 if (*option == 3)
                     (*PickBonusCount) += 1; // related to Pick_Hunter bonus
                 player = i;

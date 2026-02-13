@@ -1,5 +1,6 @@
 #include <math.h>
 #include <limits.h>
+#include <stdio.h>
 #define MAX_OPEN 150
 #define MAX_CLOSED 150
 /*
@@ -28,6 +29,22 @@ typedef struct
     int parent_j;
     int f, g, h;
 } cell;
+
+/* Find nearest player by Manhattan distance table. */
+static int nearestPlayerAStar(int hunter, int alivePlayers, int PlHuDistance[][15])
+{
+    int best = -1;
+    int minD = INT_MAX;
+    for (int i = 0; i < alivePlayers; i++)
+    {
+        if (PlHuDistance[hunter][i] < minD)
+        {
+            minD = PlHuDistance[hunter][i];
+            best = i;
+        }
+    }
+    return best;
+}
 
 /* Remove an entry from the open list by index. */
 void erase(pPair *openlist, int opencount, int index)
@@ -78,6 +95,7 @@ int isUnBlocked(int rows, int cols, Pair ori, Pair dest, int isWall[][15][2])
         else
             return 1;
     }
+    return 0;
 }
 
 /* Return true if the current cell matches the destination. */
@@ -120,6 +138,7 @@ void tracepath(int rows, int cols, cell cells[][15], Pair dest, Pair *paths, int
 /* Compute a path from origin to destination while avoiding walls and bonuses. */
 void aStar(int rows, int cols, int isWall[][15][2], Pair ori, Pair dest, Pair *path, int *pathcount, int isBonus[][15])
 {
+    *pathcount = 0;
     if (ori.row == dest.row && ori.col == dest.col)
         return;
     int opencount = 0;
@@ -147,7 +166,7 @@ void aStar(int rows, int cols, int isWall[][15][2], Pair ori, Pair dest, Pair *p
     cells[i][j].parent_i = i;
     cells[i][j].parent_j = j;
 
-    pPair openlist[MAX_OPEN];
+pPair openlist[MAX_OPEN];
     openlist[opencount].f = 0;
     openlist[opencount].p.row = i;
     openlist[opencount].p.col = j;
@@ -263,7 +282,8 @@ void aStar(int rows, int cols, int isWall[][15][2], Pair ori, Pair dest, Pair *p
         }
         if (isValid(rows, cols, i, j + 1))
         {
-            if (isDestination(i, j + 1, dest) && isUnBlocked(rows, cols, (Pair){i, j}, (Pair){i, j + 1}, isWall) == 1)
+
+if (isDestination(i, j + 1, dest) && isUnBlocked(rows, cols, (Pair){i, j}, (Pair){i, j + 1}, isWall) == 1)
             {
                 ismoved = 1;
                 cells[i][j + 1].parent_i = i;
@@ -284,7 +304,7 @@ void aStar(int rows, int cols, int isWall[][15][2], Pair ori, Pair dest, Pair *p
                 gNew = cells[i][j].g + 1;
                 hNew = calculateH(i, j + 1, dest);
                 fNew = gNew + hNew;
-                if (cells[i][j + 1].f == INT_MAX || cells[i][j + 1].f > fNew)
+                if (cells[i][j + 1].f == INT_MAX  || cells[i][j + 1].f > fNew)
                 {
                     cells[i][j + 1].f = fNew;
                     cells[i][j + 1].g = gNew;
@@ -324,7 +344,7 @@ void aStar(int rows, int cols, int isWall[][15][2], Pair ori, Pair dest, Pair *p
                 gNew = cells[i][j].g + 1;
                 hNew = calculateH(i, j - 1, dest);
                 fNew = gNew + hNew;
-                if (cells[i][j - 1].f == INT_MAX || cells[i][j - 1].f > fNew)
+                if (cells[i][j - 1].f == INT_MAX  || cells[i][j - 1].f > fNew)
                 {
                     cells[i][j - 1].f = fNew;
                     cells[i][j - 1].g = gNew;

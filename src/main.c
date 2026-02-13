@@ -53,6 +53,7 @@ int main()
     /* Main loop: update game state and render each frame. */
     while (!WindowShouldClose() || StartFade)
     {
+        pathcount = 0;
         UpdateMusicStream(music);
         if(WindowShouldClose() && !StartFade)StartFade = 1;
         if(StartFade){
@@ -76,8 +77,7 @@ int main()
         BeginDrawing();
         BeginMode2D(cam);
         tempWalls(n, m, cellWidth, cellHeight, BlaWalls);
-
-        PiecesMoving(GameStoppage, cellWidth, cellHeight, &alivePlayers, players, playerMoved, &player, sw, n, m, walls, &WallCount, BonusWalls, &TempWallcounter, isWall, BlaWalls, WallsState, &showError, &counter, &timer, wallTurn, hunters, huntersCount, PlHuDistance, &shakeTimeLeft, BoardQuake, isHunter, dir, isBonus, &cam, shakeIntensity, &shakeOffset, &option, &MovePlayerBonus);
+        PiecesMoving(GameStoppage, cellWidth, cellHeight, &alivePlayers, players, playerMoved, &player, sw, n, m, walls, &WallCount, BonusWalls, &TempWallcounter, isWall, BlaWalls, WallsState, &showError, &counter, &timer, wallTurn, hunters, huntersCount, PlHuDistance, &shakeTimeLeft, BoardQuake, isHunter, dir, isBonus, &cam, shakeIntensity, &shakeOffset, &option, &MovePlayerBonus, path, &pathcount);
 
         DrawGridB(n, m, cellWidth, cellHeight, height, width);
         ShowingLightcore(lightCoreH, lightCoreW, cellWidth, cellHeight);
