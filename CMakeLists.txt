@@ -4,12 +4,12 @@ project(GameProject C)
 set(CMAKE_C_STANDARD 99)
 
 add_executable(game
-    main.c
-    board.c
-    inputs.c
-    movements.c
-    bonus.c
-    pathfinding.c
+    src/main.c
+    src/board.c
+    src/inputs.c
+    src/movements.c
+    src/bonus.c
+    src/pathfinding.c
 )
 
 target_include_directories(game PRIVATE
