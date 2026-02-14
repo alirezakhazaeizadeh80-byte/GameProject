@@ -341,8 +341,8 @@ void ReturnGameBasics(FILE *game, int *lightCoreH, int *lightCoreW, int *players
     }
     else if ((*n) - (*m) >= 4)
     {
-        *width = 400.0;
-        *height = 700.0;
+        *width = 500.0;
+        *height = 800.0;
         *maxsize = 80.0f;
         *MaxSize = 20.0f;
     }
