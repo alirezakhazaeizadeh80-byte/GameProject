@@ -22,7 +22,7 @@ void Win(int height, int width, int lightcoreX, int lightcoreY, int players[][2]
 /* Find the nearest non-ignored player for a hunter. */
 int searchNearestPlayer(int hunter, int alivePlayers, int huntersCount, int PlHuDistance[][15], int ignore[]);
 /* Draw the lose screen and remove captured players. */
-void Lose(int height, int width, int cols, int players[][2], int *alivePlayers, int hunters[][2], int huntersCount, int isHunter[][15], float *fontsize, float maxsize, float speed, Font f, int *GameStoppage, int LightcoreH, int LightcoreW, float oldPlayers[][2], float oldHunters[][2], int *counter, int playerMoved[]);
+void Lose(int height, int width, int cols, int players[][2], int *alivePlayers, int hunters[][2], int huntersCount, int isHunter[][15], float *fontsize, float maxsize, float speed, Font f, int *GameStoppage, int LightcoreH, int LightcoreW, float oldPlayers[][2], float oldHunters[][2], int *counter, int playerMoved[], int BonusWalls[]);
 /* Interpolate piece positions for smooth movement. */
 void AnimatePieces(float old[][2], int pieces[][2], int piecesCount, float speed, int state, int dir[]);
 /* Handle player input, wall placement, hunter updates, and screen shake. */

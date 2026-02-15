@@ -414,7 +414,6 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
         }
         break;
     case 2:
-        // if(*TextPrinted == 0){
         if (*fontsize >= maxsize)
         {
             *TextState = 'D';
@@ -440,13 +439,10 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
         DrawTextPro(f, str3, pos3, origin3, 0.0f, *fontsize, 2, color3);
         if (*fontsize <= 0.0)
         {
-            //*TextPrinted = 1;
             *option = -1;
-            //*MoveTimer = 0;
             *TextTimer = -1;
             *TextState = 'I';
         }
-        //}
         if (*MoveTimer <= 1.8 && *option != -1)
         {
             *BoardQuake = 1;
@@ -456,7 +452,6 @@ void CheckBonus(int *option, float *fontsize, float maxsize, float speed, int pl
         {
             *BoardQuake = 0;
             *MoveTimer = 0;
-            //*option = -1;
             *TextPrinted = 0;
             *isQuake = 0;
         }
