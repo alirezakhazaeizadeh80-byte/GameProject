@@ -316,7 +316,7 @@ void Win(int height, int width, int lightcoreX, int lightcoreY, int players[][2]
 }
 
 /* Draw the lose screen and remove captured players. */
-void Lose(int height, int width, int cols, int players[][2], int *alivePlayers, int hunters[][2], int huntersCount, int isHunter[][15], float *fontsize, float maxsize, float speed, Font f, int *GameStoppage, int LightcoreH, int LightcoreW, float oldPlayers[][2], float oldHunters[][2], int *counter, int playerMoved[])
+void Lose(int height, int width, int cols, int players[][2], int *alivePlayers, int hunters[][2], int huntersCount, int isHunter[][15], float *fontsize, float maxsize, float speed, Font f, int *GameStoppage, int LightcoreH, int LightcoreW, float oldPlayers[][2], float oldHunters[][2], int *counter, int playerMoved[], int BonusWalls[])
 {
     for (int i = 0; i < *alivePlayers; i++)
     {
@@ -353,6 +353,7 @@ void Lose(int height, int width, int cols, int players[][2], int *alivePlayers, 
                         players[j - 1][0] = players[j][0];
                         players[j - 1][1] = players[j][1];
                         playerMoved[j - 1] = playerMoved[j];
+                        BonusWalls[j - 1] = BonusWalls[j];
                     }
                     for (int k = 0; k < *alivePlayers; k++)
                     {
@@ -459,7 +460,6 @@ void PiecesMoving(int GameStoppage, float cellWidth, float cellHeight, int *aliv
 {
     if (GameStoppage == 0)
     {
-        // int PlayerSelected = 0;
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !(IsKeyDown(KEY_T)))
         {
             int x = GetMouseX();
@@ -472,7 +472,6 @@ void PiecesMoving(int GameStoppage, float cellWidth, float cellHeight, int *aliv
                 {
                     *player = i;
                     sw = 1;
-                    // PlayerSelected = 1;
                     break;
                 }
             }
